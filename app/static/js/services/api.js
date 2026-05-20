@@ -9,7 +9,7 @@ export async function api(path, options = {}) {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.error || "Erro ao processar solicitacao");
+    throw new Error(data.error || "Erro ao processar solicitação");
   }
 
   return data;

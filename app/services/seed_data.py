@@ -10,17 +10,23 @@ from app.models import LimiarDecisao, Paciente, PesoSintoma, Profissional, Sexo,
 
 SINTOMAS_MVP = [
     ("Deficiencia intelectual", "Cognitivo", 0.14, 0.13),
-    ("Atraso na fala", "Comunicacao", 0.09, 0.08),
+    ("Atraso na fala", "Comunicação", 0.09, 0.08),
     ("Dificuldades de aprendizagem", "Cognitivo", 0.08, 0.09),
-    ("Deficit de atencao", "Comportamental", 0.07, 0.07),
+    ("Déficit de atenção", "Comportamental", 0.07, 0.07),
     ("Hiperatividade", "Comportamental", 0.07, 0.06),
     ("Movimentos repetitivos", "Comportamental", 0.06, 0.06),
-    ("Evitacao de contato visual", "Comportamental", 0.06, 0.06),
+    ("Evitação de contato visual", "Comportamental", 0.06, 0.06),
     ("Dificuldade de interacao social", "Comportamental", 0.06, 0.07),
-    ("Face alongada", "Fisico", 0.07, 0.06),
-    ("Orelhas proeminentes", "Fisico", 0.06, 0.05),
-    ("Macroorquidismo", "Fisico", 0.09, 0.00),
+    ("Face alongada", "Físico", 0.07, 0.06),
+    ("Orelhas proeminentes", "Físico", 0.06, 0.05),
+    ("Macroorquidismo", "Físico", 0.09, 0.00),
 ]
+
+SINTOMA_ALIASES = {
+    "Comunicação": ["Comunicacao"],
+    "Déficit de atenção": ["Deficit de atencao"],
+    "Evitação de contato visual": ["Evitacao de contato visual"],
+}
 
 PACIENTES_DEMO = [
     ("Ana Silva Santos", Sexo.FEMININO, date(2018, 5, 1)),
@@ -34,14 +40,14 @@ def sync_profissional_demo(db):
     if profissional:
         profissional.nome = "Dr. Admin"
         profissional.senha_hash = generate_password_hash("123456")
-        profissional.especialidade = "Genetica Medica"
+        profissional.especialidade = "Genética Médica"
         return profissional, False
 
     profissional = Profissional(
         nome="Dr. Admin",
         email="contato@sxf.com",
         senha_hash=generate_password_hash("123456"),
-        especialidade="Genetica Medica",
+        especialidade="Genética Médica",
     )
     db.add(profissional)
     db.flush()
@@ -59,12 +65,14 @@ def sync_limiares(db):
 
 def sync_sintomas(db):
     for descricao, categoria, peso_m, peso_f in SINTOMAS_MVP:
-        sintoma = db.query(Sintoma).filter_by(descricao=descricao).first()
+        descricoes_possiveis = [descricao, *SINTOMA_ALIASES.get(descricao, [])]
+        sintoma = db.query(Sintoma).filter(Sintoma.descricao.in_(descricoes_possiveis)).first()
         if not sintoma:
             sintoma = Sintoma(descricao=descricao, categoria=categoria)
             db.add(sintoma)
             db.flush()
         else:
+            sintoma.descricao = descricao
             sintoma.categoria = categoria
 
         for sexo, valor in ((Sexo.MASCULINO, peso_m), (Sexo.FEMININO, peso_f)):

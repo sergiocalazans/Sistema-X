@@ -11,7 +11,7 @@ export function setAuthRenderer(renderFn) {
 
 export function buildShell() {
   const fragment = template("tpl-shell");
-  setText(fragment, "user-name", state.currentUser?.nome || "Sistema Clinico");
+  setText(fragment, "user-name", state.currentUser?.nome || "Sistema Clínico");
   mount(appRoot(), fragment);
 
   document.querySelectorAll(".nav-item[data-page]").forEach((el) => {

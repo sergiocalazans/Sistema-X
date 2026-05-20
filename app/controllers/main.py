@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from flask import Blueprint, jsonify, render_template, request, session
+from flask import Blueprint, jsonify, render_template, request, send_file, session
 from sqlalchemy import func
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -15,6 +15,8 @@ from app.models import (
     Sexo,
     Sintoma,
 )
+from app.services.reports import build_reports
+from app.services.exports import assessments_workbook, patients_workbook
 
 main_bp = Blueprint("main", __name__)
 
@@ -26,7 +28,7 @@ def current_professional_id():
 def require_auth():
     profissional_id = current_professional_id()
     if not profissional_id:
-        return None, (jsonify({"error": "Autenticacao obrigatoria"}), 401)
+        return None, (jsonify({"error": "Autenticação obrigatória"}), 401)
     return profissional_id, None
 
 
@@ -61,7 +63,7 @@ def avaliacao_json(avaliacao):
         "score": round(avaliacao.score_calculado, 2),
         "threshold": round(avaliacao.limiar_decisao.valor, 2),
         "rec": "encaminhar" if avaliacao.encaminhar else "nao-prio",
-        "recommendation": "Encaminhar" if avaliacao.encaminhar else "Nao prioritario",
+        "recommendation": "Encaminhar" if avaliacao.encaminhar else "Não prioritário",
         "observacao": avaliacao.observacao,
         "date": avaliacao.realizado_em.strftime("%d/%m/%Y %H:%M"),
         "symptoms": [
@@ -86,7 +88,7 @@ def register():
     email = (data.get("email") or "").strip().lower()
     senha = data.get("senha") or ""
     nome = (data.get("nome") or "Profissional").strip()
-    especialidade = (data.get("especialidade") or "Saude").strip()
+    especialidade = (data.get("especialidade") or "Saúde").strip()
 
     if not email or not senha:
         return jsonify({"error": "Informe e-mail e senha"}), 400
@@ -123,7 +125,7 @@ def login():
     try:
         profissional = db.query(Profissional).filter(func.lower(Profissional.email) == email).first()
         if not profissional or not check_password_hash(profissional.senha_hash, senha):
-            return jsonify({"error": "E-mail ou senha invalidos"}), 401
+            return jsonify({"error": "E-mail ou senha inválidos"}), 401
 
         session["profissional_id"] = profissional.id
         return jsonify({"id": profissional.id, "email": profissional.email, "nome": profissional.nome})
@@ -190,12 +192,12 @@ def create_paciente():
         sexo = Sexo(data.get("sexo"))
         data_nascimento = parse_birth_date(data.get("data_nascimento"))
     except (ValueError, TypeError):
-        return jsonify({"error": "Dados do paciente invalidos"}), 400
+        return jsonify({"error": "Dados do paciente inválidos"}), 400
 
     if not nome or not data_nascimento:
         return jsonify({"error": "Informe nome, data de nascimento e sexo"}), 400
     if data_nascimento > date.today():
-        return jsonify({"error": "Data de nascimento nao pode ser futura"}), 400
+        return jsonify({"error": "Data de nascimento não pode ser futura"}), 400
 
     db = SessionLocal()
     try:
@@ -228,7 +230,7 @@ def update_paciente(paciente_id):
             .first()
         )
         if not paciente:
-            return jsonify({"error": "Paciente nao encontrado"}), 404
+            return jsonify({"error": "Paciente não encontrado"}), 404
 
         if "nome" in data:
             paciente.nome = (data.get("nome") or "").strip()
@@ -238,14 +240,33 @@ def update_paciente(paciente_id):
             paciente.data_nascimento = parse_birth_date(data.get("data_nascimento"))
 
         if not paciente.nome or not paciente.data_nascimento:
-            return jsonify({"error": "Dados do paciente invalidos"}), 400
+            return jsonify({"error": "Dados do paciente inválidos"}), 400
 
         db.commit()
         db.refresh(paciente)
         return jsonify(paciente_json(paciente))
     except (ValueError, TypeError):
         db.rollback()
-        return jsonify({"error": "Dados do paciente invalidos"}), 400
+        return jsonify({"error": "Dados do paciente inválidos"}), 400
+    finally:
+        db.close()
+
+
+@main_bp.route("/api/pacientes/export")
+def export_pacientes():
+    profissional_id, error = require_auth()
+    if error:
+        return error
+
+    db = SessionLocal()
+    try:
+        workbook = patients_workbook(db, profissional_id)
+        return send_file(
+            workbook,
+            as_attachment=True,
+            download_name="pacientes.xlsx",
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
     finally:
         db.close()
 
@@ -286,6 +307,25 @@ def get_avaliacoes():
         db.close()
 
 
+@main_bp.route("/api/avaliacoes/export")
+def export_avaliacoes():
+    profissional_id, error = require_auth()
+    if error:
+        return error
+
+    db = SessionLocal()
+    try:
+        workbook = assessments_workbook(db, profissional_id)
+        return send_file(
+            workbook,
+            as_attachment=True,
+            download_name="historico-avaliacoes.xlsx",
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+    finally:
+        db.close()
+
+
 @main_bp.route("/api/avaliacoes", methods=["POST"])
 def create_avaliacao():
     profissional_id, error = require_auth()
@@ -297,7 +337,7 @@ def create_avaliacao():
     try:
         sintomas_presentes = {int(sintoma_id) for sintoma_id in (data.get("sintomas") or [])}
     except (TypeError, ValueError):
-        return jsonify({"error": "Lista de sintomas invalida"}), 400
+        return jsonify({"error": "Lista de sintomas inválida"}), 400
     observacao = (data.get("observacao") or "").strip() or None
 
     db = SessionLocal()
@@ -308,11 +348,11 @@ def create_avaliacao():
             .first()
         )
         if not paciente:
-            return jsonify({"error": "Paciente nao encontrado"}), 404
+            return jsonify({"error": "Paciente não encontrado"}), 404
 
         limiar = db.query(LimiarDecisao).filter(LimiarDecisao.sexo == paciente.sexo).first()
         if not limiar:
-            return jsonify({"error": "Limiar de decisao nao cadastrado para o sexo do paciente"}), 400
+            return jsonify({"error": "Limiar de decisão não cadastrado para o sexo do paciente"}), 400
 
         sintomas = db.query(Sintoma).all()
         pesos = {
@@ -343,5 +383,18 @@ def create_avaliacao():
         db.commit()
         db.refresh(avaliacao)
         return jsonify(avaliacao_json(avaliacao)), 201
+    finally:
+        db.close()
+
+
+@main_bp.route("/api/relatorios")
+def get_relatorios():
+    profissional_id, error = require_auth()
+    if error:
+        return error
+
+    db = SessionLocal()
+    try:
+        return jsonify(build_reports(db, profissional_id))
     finally:
         db.close()

@@ -1,17 +1,19 @@
 # Sistema-X
 
-Sistema web de triagem clinica para Sindrome do X Fragil (SXF). O projeto integra front-end, back-end Flask e banco de dados MySQL para cadastrar profissionais, pacientes, sintomas e avaliacoes clinicas.
+Sistema web de triagem clínica para Síndrome do X Frágil (SXF). O projeto integra front-end, back-end Flask e banco de dados MySQL para cadastrar profissionais, pacientes, sintomas e avaliações clínicas.
 
 ## Funcionalidades
 
 - Login e cadastro de profissionais com senha armazenada em hash.
-- Cadastro e edicao de pacientes.
+- Cadastro e edição de pacientes.
 - Checklist de sintomas associados a SXF.
-- Calculo automatico do score clinico por soma ponderada.
+- Cálculo automático do score clínico por soma ponderada.
 - Comparacao do score com limiar por sexo.
 - Recomendacao automatica de encaminhamento para teste genetico.
-- Historico de avaliacoes realizadas.
-- Dashboard com totais e avaliacoes recentes.
+- Histórico de avaliações realizadas.
+- Dashboard com totais e avaliações recentes.
+- Relatórios com indicadores calculados em pandas e gráficos Plotly.
+- Exportação de pacientes e histórico de avaliações para Excel.
 
 ## Tecnologias
 
@@ -34,6 +36,8 @@ Sistema-X/
       main.py                # Rotas web e APIs JSON
     services/
       seed_data.py           # Dados padrao do MVP e seed
+      reports.py             # Indicadores e gráficos dos relatórios
+      exports.py             # Exportação Excel de pacientes e avaliações
     static/
       css/
         styles.css
@@ -104,7 +108,7 @@ Acesse:
 http://127.0.0.1:5000
 ```
 
-Ao iniciar, o sistema cria o banco, caso ele nao exista, cria as tabelas e sincroniza os dados base do MVP.
+Ao iniciar, o sistema cria o banco, caso ele não exista, cria as tabelas e sincroniza os dados base do MVP.
 
 ## Dados Iniciais
 

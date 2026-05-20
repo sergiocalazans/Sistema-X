@@ -7,7 +7,7 @@ export function appRoot() {
 export function template(id) {
   const tpl = document.getElementById(id);
   if (!tpl) {
-    throw new Error(`Template nao encontrado: ${id}`);
+    throw new Error(`Template não encontrado: ${id}`);
   }
 
   const fragment = tpl.content.cloneNode(true);

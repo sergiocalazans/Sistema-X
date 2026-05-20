@@ -1,5 +1,5 @@
 import { state } from "./state.js";
-import { loadAssessments, loadPatients, loadSymptoms } from "../services/data.js";
+import { loadAssessments, loadPatients, loadReports, loadSymptoms } from "../services/data.js";
 import { showToast } from "../ui/dom.js";
 
 const pages = {};
@@ -49,5 +49,9 @@ async function loadPageData(pageId) {
 
   if (["dashboard", "avaliacoes"].includes(pageId)) {
     await loadAssessments();
+  }
+
+  if (pageId === "relatorios") {
+    await loadReports();
   }
 }

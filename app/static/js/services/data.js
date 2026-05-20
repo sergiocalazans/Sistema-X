@@ -12,3 +12,7 @@ export async function loadSymptoms() {
 export async function loadAssessments() {
   state.assessments = await api("/api/avaliacoes");
 }
+
+export async function loadReports() {
+  state.reports = await api("/api/relatorios");
+}

@@ -1,12 +1,14 @@
 <template id="tpl-patients">
   <div class="page-header">
-    <div class="page-title">Gestao de Pacientes</div>
-    <div class="page-subtitle">Cadastro e atualizacao dos pacientes</div>
+    <div class="page-title">Gestão de Pacientes</div>
+    <div class="page-subtitle">Cadastro e atualização dos pacientes</div>
   </div>
 
   <div class="page-body">
     <div class="form-section">
-      <div class="form-section-title" id="patient-form-title">Cadastrar paciente</div>
+      <div class="form-section-title" id="patient-form-title">
+        Cadastrar paciente
+      </div>
       <form id="patient-form">
         <input type="hidden" id="patient-id" />
         <div class="form-grid">
@@ -27,14 +29,21 @@
           </div>
         </div>
         <div class="form-actions">
-          <button class="btn btn-primary" type="submit"><span data-icon="plus"></span>Salvar paciente</button>
-          <button class="btn btn-secondary" type="button" id="patient-clear">Limpar</button>
+          <button class="btn btn-primary" type="submit">
+            <span data-icon="plus"></span>Salvar paciente
+          </button>
+          <button class="btn btn-secondary" type="button" id="patient-clear">
+            Limpar
+          </button>
         </div>
       </form>
     </div>
 
     <div class="table-card patient-table">
-      <div class="table-header"><span class="table-title">Pacientes cadastrados</span></div>
+      <div class="table-header">
+        <span class="table-title">Pacientes cadastrados</span>
+        <button class="btn btn-secondary btn-sm" id="export-patients">Exportar Excel</button>
+      </div>
       <div class="table-wrap" data-slot="patients-table"></div>
     </div>
   </div>

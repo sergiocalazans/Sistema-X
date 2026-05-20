@@ -4,4 +4,5 @@ export const state = {
   patients: [],
   symptoms: [],
   assessments: [],
+  reports: null,
 };
