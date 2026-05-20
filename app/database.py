@@ -43,11 +43,10 @@ def create_database_if_not_exists() -> None:
 
 
 def init_db() -> None:
-    from app import models  # noqa: F401
+    import app 
 
     create_database_if_not_exists()
     Base.metadata.create_all(bind=engine)
-
 
 def get_session():
     session = SessionLocal()

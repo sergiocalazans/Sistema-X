@@ -1,15 +1,29 @@
 import os
 from urllib.parse import quote_plus
 
-try:
-    from dbsenha import dbsenha
-except ModuleNotFoundError:
-    dbsenha = os.getenv("MYSQL_PASSWORD", "root")
+
+def load_env_file(path: str = ".env") -> None:
+    if not os.path.exists(path):
+        return
+
+    with open(path, encoding="utf-8") as env_file:
+        for line in env_file:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            os.environ.setdefault(key, value)
+
+
+load_env_file()
 
 
 def mysql_database_uri() -> str:
     user = os.getenv("MYSQL_USER", "root")
-    password = quote_plus(dbsenha)
+    password = quote_plus(os.getenv("MYSQL_PASSWORD", "root"))
     host = os.getenv("MYSQL_HOST", "localhost")
     port = os.getenv("MYSQL_PORT", "3306")
     database = os.getenv("MYSQL_DATABASE", "sistema-x")
@@ -17,6 +31,7 @@ def mysql_database_uri() -> str:
 
 
 class Config:
+    SECRET_KEY = os.getenv("SECRET_KEY", "sistema-x-dev-secret")
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
         mysql_database_uri(),

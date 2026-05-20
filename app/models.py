@@ -3,9 +3,8 @@ from __future__ import annotations
 from datetime import date, datetime
 from enum import Enum
 
-from sqlalchemy import Boolean, Date, DateTime
+from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String, func, text
 from sqlalchemy import Enum as SQLEnum
-from sqlalchemy import Float, ForeignKey, Integer, String, func, text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -31,10 +30,7 @@ class Profissional(Base):
     especialidade: Mapped[str] = mapped_column(String(120), nullable=False)
     criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
-    pacientes: Mapped[list[Paciente]] = relationship(
-        back_populates="profissional",
-        cascade="all, delete-orphan",
-    )
+    pacientes: Mapped[list[Paciente]] = relationship(back_populates="profissional", cascade="all, delete-orphan")
     avaliacoes: Mapped[list[Avaliacao]] = relationship(back_populates="profissional")
 
 
@@ -44,29 +40,18 @@ class Paciente(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     nome: Mapped[str] = mapped_column(String(120), nullable=False)
     data_nascimento: Mapped[date] = mapped_column(Date, nullable=False)
-    sexo: Mapped[Sexo] = mapped_column(
-        SQLEnum(Sexo, values_callable=enum_values, native_enum=True),
-        nullable=False,
-    )
-    profissional_id: Mapped[int] = mapped_column(
-        ForeignKey("profissional.id"),
-        nullable=False,
-    )
+    sexo: Mapped[Sexo] = mapped_column(SQLEnum(Sexo, values_callable=enum_values, native_enum=True), nullable=False)
+    profissional_id: Mapped[int] = mapped_column(ForeignKey("profissional.id"), nullable=False)
     criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
     profissional: Mapped[Profissional] = relationship(back_populates="pacientes")
-    avaliacoes: Mapped[list[Avaliacao]] = relationship(
-        back_populates="paciente",
-        cascade="all, delete-orphan",
-    )
+    avaliacoes: Mapped[list[Avaliacao]] = relationship(back_populates="paciente", cascade="all, delete-orphan")
 
     @hybrid_property
     def idade(self) -> int:
         hoje = date.today()
-        return (
-            hoje.year
-            - self.data_nascimento.year
-            - ((hoje.month, hoje.day) < (self.data_nascimento.month, self.data_nascimento.day))
+        return hoje.year - self.data_nascimento.year - (
+            (hoje.month, hoje.day) < (self.data_nascimento.month, self.data_nascimento.day)
         )
 
     @idade.expression
@@ -81,10 +66,7 @@ class Sintoma(Base):
     descricao: Mapped[str] = mapped_column(String(255), nullable=False)
     categoria: Mapped[str] = mapped_column(String(120), nullable=False)
 
-    pesos: Mapped[list[PesoSintoma]] = relationship(
-        back_populates="sintoma",
-        cascade="all, delete-orphan",
-    )
+    pesos: Mapped[list[PesoSintoma]] = relationship(back_populates="sintoma", cascade="all, delete-orphan")
     avaliacoes_sintomas: Mapped[list[AvaliacaoSintoma]] = relationship(back_populates="sintoma")
 
 
@@ -93,17 +75,9 @@ class PesoSintoma(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     sintoma_id: Mapped[int] = mapped_column(ForeignKey("sintoma.id"), nullable=False)
-    sexo_referencia: Mapped[Sexo] = mapped_column(
-        SQLEnum(Sexo, values_callable=enum_values, native_enum=True),
-        nullable=False,
-    )
+    sexo_referencia: Mapped[Sexo] = mapped_column(SQLEnum(Sexo, values_callable=enum_values, native_enum=True), nullable=False)
     peso: Mapped[float] = mapped_column(Float, nullable=False)
-    atualizado_em: Mapped[datetime] = mapped_column(
-        DateTime,
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False,
-    )
+    atualizado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
     sintoma: Mapped[Sintoma] = relationship(back_populates="pesos")
 
@@ -112,17 +86,9 @@ class LimiarDecisao(Base):
     __tablename__ = "limiar_decisao"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    sexo: Mapped[Sexo] = mapped_column(
-        SQLEnum(Sexo, values_callable=enum_values, native_enum=True),
-        nullable=False,
-    )
+    sexo: Mapped[Sexo] = mapped_column(SQLEnum(Sexo, values_callable=enum_values, native_enum=True), nullable=False)
     valor: Mapped[float] = mapped_column(Float, nullable=False)
-    atualizado_em: Mapped[datetime] = mapped_column(
-        DateTime,
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False,
-    )
+    atualizado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
     avaliacoes: Mapped[list[Avaliacao]] = relationship(back_populates="limiar_decisao")
 
@@ -142,10 +108,7 @@ class Avaliacao(Base):
     paciente: Mapped[Paciente] = relationship(back_populates="avaliacoes")
     profissional: Mapped[Profissional] = relationship(back_populates="avaliacoes")
     limiar_decisao: Mapped[LimiarDecisao] = relationship(back_populates="avaliacoes")
-    sintomas: Mapped[list[AvaliacaoSintoma]] = relationship(
-        back_populates="avaliacao",
-        cascade="all, delete-orphan",
-    )
+    sintomas: Mapped[list[AvaliacaoSintoma]] = relationship(back_populates="avaliacao", cascade="all, delete-orphan")
 
 
 class AvaliacaoSintoma(Base):

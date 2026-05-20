@@ -1,0 +1,36 @@
+<template id="tpl-result">
+  <div class="page-header">
+    <div class="page-title">Resultado da Triagem</div>
+    <div class="page-subtitle">Score calculado e recomendacao automatica</div>
+  </div>
+
+  <div class="page-body">
+    <div class="result-card">
+      <div class="result-header">
+        <h2 data-slot="patient-name"></h2>
+        <p data-slot="assessment-date"></p>
+      </div>
+      <div class="result-body">
+        <div class="result-grid">
+          <div class="result-field"><label>Score</label><div class="value score-val" data-slot="score"></div></div>
+          <div class="result-field"><label>Limiar</label><div class="value score-val" data-slot="threshold"></div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar-track"><div class="score-bar-fill" data-slot="score-bar"></div></div>
+          <div class="score-bar-labels"><span>0</span><span>1</span></div>
+        </div>
+        <div class="result-status" data-slot="status-box">
+          <div class="status-icon" data-icon="check"></div>
+          <div class="status-content">
+            <h3 data-slot="status-title"></h3>
+            <p>O resultado foi salvo no historico do paciente.</p>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary" id="new-assessment">Nova triagem</button>
+          <button class="btn btn-secondary" id="go-history">Ver historico</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

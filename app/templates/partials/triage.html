@@ -1,0 +1,29 @@
+<template id="tpl-triage">
+  <div class="page-header">
+    <div class="page-title">Nova Triagem</div>
+    <div class="page-subtitle">Checklist clinico com score automatico</div>
+  </div>
+
+  <div class="page-body">
+    <form class="form-section" id="assessment-form">
+      <div class="form-group">
+        <label class="form-label">Paciente</label>
+        <select id="assessment-patient" class="form-input" required>
+          <option value="">Selecione</option>
+        </select>
+      </div>
+
+      <div class="form-section-title">Sintomas clinicos associados a SXF</div>
+      <div data-slot="symptoms"></div>
+
+      <div class="form-group observation-field">
+        <label class="form-label">Observacao</label>
+        <textarea id="assessment-note" class="form-input" rows="3" maxlength="500"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Salvar Avaliacao</button>
+      </div>
+    </form>
+  </div>
+</template>
