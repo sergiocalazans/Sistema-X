@@ -6,11 +6,12 @@ export function renderAssessmentsPage(el) {
   const fragment = template("tpl-assessments");
   setHtml(fragment, "assessments-table", assessmentsTable());
   mount(el, fragment);
+  bindAssessmentExport();
 }
 
 function assessmentsTable() {
   if (!state.assessments.length) {
-    return emptyState("Nenhuma avaliacao registrada ainda.");
+    return emptyState("Nenhuma avaliação registrada ainda.");
   }
 
   return `<table>
@@ -29,4 +30,10 @@ function assessmentRow(assessment) {
     <td>${recBadge(assessment.rec)}</td>
     <td>${assessment.date}</td>
   </tr>`;
+}
+
+function bindAssessmentExport() {
+  document.getElementById("export-assessments").addEventListener("click", () => {
+    window.location.href = "/api/avaliacoes/export";
+  });
 }

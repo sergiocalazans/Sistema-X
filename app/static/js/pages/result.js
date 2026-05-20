@@ -8,7 +8,7 @@ export function renderResult(el, result) {
   const scoreBar = slot(fragment, "score-bar");
 
   setText(fragment, "patient-name", result.patientName);
-  setText(fragment, "assessment-date", `Avaliacao realizada em ${result.date}`);
+  setText(fragment, "assessment-date", `Avaliação realizada em ${result.date}`);
   setText(fragment, "score", result.score);
   setText(fragment, "threshold", result.threshold);
   setText(fragment, "status-title", statusTitle(shouldRefer));
@@ -17,12 +17,16 @@ export function renderResult(el, result) {
   scoreBar.style.width = `${Math.min(result.score * 100, 100)}%`;
 
   mount(el, fragment);
-  document.getElementById("new-assessment").addEventListener("click", () => navigate("triagem"));
-  document.getElementById("go-history").addEventListener("click", () => navigate("avaliacoes"));
+  document
+    .getElementById("new-assessment")
+    .addEventListener("click", () => navigate("triagem"));
+  document
+    .getElementById("go-history")
+    .addEventListener("click", () => navigate("avaliacoes"));
 }
 
 function statusTitle(shouldRefer) {
   return shouldRefer
-    ? "Encaminhar para teste genetico confirmatorio"
-    : "Nao prioritario para investigacao neste momento";
+    ? "Encaminhar para teste genético confirmatório"
+    : "Não prioritário para investigação neste momento";
 }

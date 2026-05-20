@@ -4,7 +4,9 @@ import { emptyState, recBadge, sexLabel } from "../ui/formatters.js";
 
 export function renderDashboardPage(el) {
   const fragment = template("tpl-dashboard");
-  const referrals = state.assessments.filter((a) => a.rec === "encaminhar").length;
+  const referrals = state.assessments.filter(
+    (a) => a.rec === "encaminhar",
+  ).length;
 
   setText(fragment, "total-patients", state.patients.length);
   setText(fragment, "total-assessments", state.assessments.length);
@@ -16,7 +18,7 @@ export function renderDashboardPage(el) {
 
 function recentAssessmentsTable() {
   if (!state.assessments.length) {
-    return emptyState("Nenhuma avaliacao registrada ainda.");
+    return emptyState("Nenhuma avaliação registrada ainda.");
   }
 
   return `<table>

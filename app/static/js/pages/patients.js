@@ -1,5 +1,5 @@
-import { state } from "../core/state.js";
 import { navigate } from "../core/router.js";
+import { state } from "../core/state.js";
 import { api } from "../services/api.js";
 import { mount, setHtml, showToast, template } from "../ui/dom.js";
 import { emptyState, sexLabel } from "../ui/formatters.js";
@@ -10,6 +10,7 @@ export function renderPatientsPage(el) {
 
   mount(el, fragment);
   bindPatientForm();
+  bindPatientExport();
 }
 
 function patientsTable() {
@@ -18,7 +19,7 @@ function patientsTable() {
   }
 
   return `<table>
-    <thead><tr><th>ID</th><th>Nome</th><th>Sexo</th><th>Idade</th><th>Ultimo score</th><th></th></tr></thead>
+    <thead><tr><th>ID</th><th>Nome</th><th>Sexo</th><th>Idade</th><th>Último score</th><th></th></tr></thead>
     <tbody>${state.patients.map(patientRow).join("")}</tbody>
   </table>`;
 }
@@ -36,10 +37,14 @@ function patientRow(patient) {
 
 function bindPatientForm() {
   const form = document.getElementById("patient-form");
-  document.getElementById("patient-clear").addEventListener("click", clearPatientForm);
+  document
+    .getElementById("patient-clear")
+    .addEventListener("click", clearPatientForm);
 
   document.querySelectorAll(".edit-patient").forEach((button) => {
-    button.addEventListener("click", () => fillPatientForm(Number(button.dataset.id)));
+    button.addEventListener("click", () =>
+      fillPatientForm(Number(button.dataset.id)),
+    );
   });
 
   form.addEventListener("submit", async (event) => {
@@ -48,10 +53,17 @@ function bindPatientForm() {
   });
 }
 
+function bindPatientExport() {
+  document.getElementById("export-patients").addEventListener("click", () => {
+    window.location.href = "/api/pacientes/export";
+  });
+}
+
 function clearPatientForm() {
   document.getElementById("patient-form").reset();
   document.getElementById("patient-id").value = "";
-  document.getElementById("patient-form-title").textContent = "Cadastrar paciente";
+  document.getElementById("patient-form-title").textContent =
+    "Cadastrar paciente";
 }
 
 function fillPatientForm(patientId) {
