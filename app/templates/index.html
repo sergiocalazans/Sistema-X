@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Triagem SXF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    {% include "partials/login.html" %}
+    {% include "partials/shell.html" %}
+    {% include "partials/dashboard.html" %}
+    {% include "partials/patients.html" %}
+    {% include "partials/triage.html" %}
+    {% include "partials/result.html" %}
+    {% include "partials/assessments.html" %}
+
+    <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>
