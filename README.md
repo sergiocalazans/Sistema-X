@@ -1,102 +1,250 @@
-# Sistema-X
+# 🧬 Sistema-X — Sistema de Triagem Clínica para Síndrome do X Frágil (SXF)
 
-Sistema web de triagem clínica para Síndrome do X Frágil (SXF). O projeto integra front-end, back-end Flask e banco de dados MySQL para cadastrar profissionais, pacientes, sintomas e avaliações clínicas.
+O **Sistema-X** é uma aplicação web desenvolvida para auxiliar profissionais da saúde na **triagem clínica da Síndrome do X Frágil (SXF)**, contribuindo para a identificação precoce de pacientes com maior probabilidade de apresentar a condição e apoiando decisões sobre encaminhamento para testes genéticos confirmatórios.
 
-## Funcionalidades
+A plataforma permite o cadastro de pacientes, realização de avaliações clínicas com base em sintomas associados à SXF, cálculo automatizado de score clínico e armazenamento do histórico de triagens realizadas.
 
-- Login e cadastro de profissionais com senha armazenada em hash.
-- Cadastro e edição de pacientes.
-- Checklist de sintomas associados a SXF.
-- Cálculo automático do score clínico por soma ponderada.
-- Comparacao do score com limiar por sexo.
-- Recomendacao automatica de encaminhamento para teste genetico.
-- Histórico de avaliações realizadas.
-- Dashboard com totais e avaliações recentes.
-- Relatórios com indicadores calculados em pandas e gráficos Plotly.
-- Exportação de pacientes e histórico de avaliações para Excel.
+---
 
-## Tecnologias
+## 📌 Objetivo
+
+Reduzir o subdiagnóstico da **Síndrome do X Frágil**, padronizando avaliações clínicas e auxiliando profissionais da saúde na priorização de encaminhamentos para exames genéticos.
+
+---
+
+## ✨ Funcionalidades
+
+### 👤 Autenticação
+
+- Login de profissionais da saúde
+- Cadastro de usuários
+- Senhas armazenadas com hash
+- Controle de acesso ao sistema
+
+### 🩺 Gestão de Pacientes
+
+- Cadastro de pacientes
+- Edição de informações cadastrais
+- Registro de:
+  - Nome
+  - Idade
+  - Sexo biológico
+
+### 📋 Avaliação Clínica
+
+- Checklist de sintomas associados à SXF
+- Registro de sintomas cognitivos, físicos e comportamentais
+- Cálculo automático do score clínico
+- Aplicação de pesos específicos por sintoma
+- Comparação automática com limiares definidos por sexo
+
+### 🧠 Triagem Inteligente
+
+- Recomendação automática de encaminhamento para teste genético
+- Classificação do paciente:
+  - Prioritário
+  - Não prioritário
+
+### 📊 Histórico e Relatórios
+
+- Histórico de avaliações realizadas
+- Dashboard com métricas gerais
+- Indicadores estatísticos
+- Relatórios analíticos com gráficos Plotly
+- Exportação para Excel
+
+---
+
+# ⚙️ Regras de Negócio
+
+O sistema segue as seguintes regras principais:
+
+### Cálculo do Score Clínico
+
+O score é obtido pela soma ponderada dos sintomas:
+
+```text
+Score = Σ(peso × presença_do_sintoma)
+```
+
+Onde:
+
+- Sintoma presente → `1`
+- Sintoma ausente → `0`
+
+### Limiares de decisão
+
+| Sexo      | Limiar |
+| --------- | ------ |
+| Masculino | 0.56   |
+| Feminino  | 0.55   |
+
+### Encaminhamento
+
+Se:
+
+```text
+Score ≥ limiar
+```
+
+Resultado:
+
+```text
+Encaminhar para teste genético confirmatório
+```
+
+Caso contrário:
+
+```text
+Paciente não prioritário no momento
+```
+
+---
+
+# 🏗️ Arquitetura do Projeto
+
+O sistema segue arquitetura modular baseada em Flask:
+
+```text
+Sistema-X/
+│
+├── app/
+│   ├── __init__.py              # Factory Flask
+│   ├── database.py              # Configuração banco
+│   ├── models.py                # Modelos SQLAlchemy
+│   │
+│   ├── controllers/
+│   │      main.py               # Rotas/API
+│   │
+│   ├── services/
+│   │      seed_data.py          # Dados iniciais
+│   │      reports.py            # Relatórios
+│   │      exports.py            # Exportação
+│   │
+│   ├── templates/
+│   │      index.html
+│   │      partials/
+│   │
+│   └── static/
+│          ├── css/
+│          └── js/
+│                ├── core/
+│                ├── pages/
+│                ├── services/
+│                └── ui/
+│
+├── config.py
+├── run.py
+├── seed.py
+├── requirements.txt
+└── .env.example
+```
+
+---
+
+# 🛠 Tecnologias Utilizadas
+
+## Back-end
 
 - Python
 - Flask
 - SQLAlchemy
-- MySQL
 - PyMySQL
-- HTML, CSS e JavaScript modular
 
-## Estrutura
+## Banco de Dados
 
-```text
-Sistema-X/
-  app/
-    __init__.py              # Factory da aplicacao Flask
-    database.py              # Engine, sessoes e criacao do banco/tabelas
-    models.py                # Modelos SQLAlchemy
-    controllers/
-      main.py                # Rotas web e APIs JSON
-    services/
-      seed_data.py           # Dados padrao do MVP e seed
-      reports.py             # Indicadores e gráficos dos relatórios
-      exports.py             # Exportação Excel de pacientes e avaliações
-    static/
-      css/
-        styles.css
-      js/
-        app.js               # Entrada principal do front-end
-        core/                # Estado, icones e roteamento
-        pages/               # Renderizacao das telas
-        services/            # Chamadas HTTP e carregamento de dados
-        ui/                  # Templates, formatadores, login e shell
-    templates/
-      index.html             # Pagina base
-      partials/              # Templates HTML das telas
-  config.py                  # Configuracoes e leitura do .env
-  run.py                     # Inicializacao da aplicacao
-  seed.py                    # Popula/sincroniza dados iniciais
-  requirements.txt
-  .env.example
+- SQL
+- MySQL
+
+## Front-end
+
+- HTML5
+- CSS3
+- JavaScript Modular
+
+## Relatórios e Dados
+
+- Pandas
+- Plotly
+- OpenPyXL
+
+## Desenvolvimento
+
+- VS Code
+- Git
+- GitHub
+
+---
+
+# 🔐 Configuração do Ambiente
+
+Clone o projeto:
+
+```bash
+git clone URL_DO_REPOSITORIO
 ```
 
-## Configuracao
+Entre na pasta:
 
-Crie um arquivo `.env` a partir do exemplo:
+```bash
+cd Sistema-X
+```
+
+Crie o ambiente virtual:
+
+Windows:
 
 ```powershell
-copy .env.example .env
+python -m venv venv
 ```
 
-Edite o `.env` com os dados do seu MySQL:
-
-```text
-MYSQL_USER=root
-MYSQL_PASSWORD=sua_senha
-MYSQL_HOST=localhost
-MYSQL_PORT=3306
-MYSQL_DATABASE=sistema-x
-SECRET_KEY=troque-essa-chave
-```
-
-Tambem e possivel configurar tudo por `DATABASE_URL`:
-
-```powershell
-$env:DATABASE_URL = "mysql+pymysql://usuario:senha@localhost:3306/sistema-x"
-```
-
-## Como Executar
-
-Ative o ambiente virtual:
+Ative:
 
 ```powershell
 .\venv\Scripts\activate
 ```
 
-Instale as dependencias:
+Instale dependências:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-Execute a aplicacao:
+---
+
+# ⚙️ Configuração do Banco
+
+Copie:
+
+```powershell
+copy .env.example .env
+```
+
+Configure:
+
+```env
+MYSQL_USER=root
+MYSQL_PASSWORD=senha
+
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+
+MYSQL_DATABASE=sistema_x
+
+SECRET_KEY=sua_chave
+```
+
+Ou:
+
+```env
+DATABASE_URL=mysql+pymysql://usuario:senha@localhost:3306/sistema_x
+```
+
+---
+
+# ▶️ Executando
+
+Inicie:
 
 ```powershell
 python run.py
@@ -108,56 +256,111 @@ Acesse:
 http://127.0.0.1:5000
 ```
 
-Ao iniciar, o sistema cria o banco, caso ele não exista, cria as tabelas e sincroniza os dados base do MVP.
+Ao iniciar:
 
-## Dados Iniciais
+✅ Cria banco automaticamente  
+✅ Cria tabelas  
+✅ Sincroniza dados iniciais  
+✅ Configura ambiente do MVP
 
-Para popular pacientes demonstrativos, limiares, sintomas e pesos:
+---
+
+# 🌱 Dados Iniciais
+
+Popular banco:
 
 ```powershell
 python seed.py
 ```
 
-Usuario demo:
+Usuário demonstrativo:
 
 ```text
-E-mail: contato@sxf.com
-Senha: 123456
+Email:
+contato@sxf.com
+
+Senha:
+123456
 ```
 
-## Banco de Dados
+---
 
-Principais tabelas:
+# 🗄 Modelo de Dados
 
-- `profissional`
-- `paciente`
-- `sintoma`
-- `peso_sintoma`
-- `limiar_decisao`
-- `avaliacao`
-- `avaliacao_sintoma`
+Principais entidades:
 
-Consultar todas:
+- profissional
+- paciente
+- sintoma
+- peso_sintoma
+- avaliacao
+- avaliacao_sintoma
+- limiar_decisao
+
+Consultar:
 
 ```sql
 SELECT * FROM profissional;
 SELECT * FROM paciente;
-SELECT * FROM sintoma;
-SELECT * FROM peso_sintoma;
-SELECT * FROM limiar_decisao;
 SELECT * FROM avaliacao;
-SELECT * FROM avaliacao_sintoma;
+SELECT * FROM sintoma;
 ```
 
-## Fluxo de Desenvolvimento
+---
 
-O desenvolvimento atual esta na branch `develop`. Depois de finalizar uma etapa:
+# 📈 Requisitos Não Funcionais
+
+O sistema deve:
+
+- Executar cálculos em até **2 segundos**
+- Garantir confidencialidade dos dados
+- Possuir interface intuitiva
+- Permitir manutenção modular
+- Suportar backups periódicos
+- Possibilitar expansão futura
+
+---
+
+# 🚀 Fluxo de Desenvolvimento
+
+Desenvolvimento ocorre em:
+
+```text
+develop
+```
+
+Fluxo:
 
 ```powershell
-git status
+git checkout develop
+
 git add .
-git commit -m "Mensagem do commit"
+
+git commit -m "Descrição"
+
 git push origin develop
 ```
 
-Depois disso, crie um Pull Request de `develop` para `main` no GitHub.
+Após concluir:
+
+Criar Pull Request:
+
+```text
+develop → main
+```
+
+---
+
+# 👥 Equipe
+
+| Integrante           | GitHub                            |
+| -------------------- | --------------------------------- |
+| Gabriel Schwerdt     | https://github.com/StringSchwerdt |
+| Millena Gurczakovski | https://github.com/MillenaGur     |
+| Sérgio Calazans      | https://github.com/sergiocalazans |
+
+---
+
+# 📄 Licença
+
+Projeto acadêmico desenvolvido para a disciplina **Experiência Criativa: Criando Soluções Computacionais** — PUCPR.
