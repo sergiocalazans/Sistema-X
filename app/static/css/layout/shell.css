@@ -104,56 +104,6 @@
   min-height: 100vh;
 }
 
-.mobile-topbar,
-.sidebar-backdrop {
-  display: none;
-}
-
-.mobile-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 80;
-  align-items: center;
-  gap: 12px;
-  min-height: 58px;
-  padding: 10px 16px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-}
-
-.mobile-menu-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.mobile-menu-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
-.mobile-brand {
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.sidebar-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  background: rgba(15,23,42,.45);
-}
-
-.sidebar-backdrop.show {
-  display: block;
-}
-
 .page-header {
   padding: 32px 40px 24px;
   border-bottom: 1px solid var(--border);

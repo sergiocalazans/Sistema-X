@@ -1,25 +1,8 @@
-@media (max-width: 1180px) {
-  .sidebar {
-    width: min(82vw, var(--sidebar-w));
-    transform: translateX(-100%);
-    box-shadow: var(--shadow-lg);
-  }
-
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
   .main-content { margin-left: 0; }
-  .mobile-topbar { display: flex; }
-
-  .reports-kpi-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .patient-form-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 900px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .stats-grid { grid-template-columns: 1fr; }
   .reports-kpi-grid,
   .reports-grid,
   .reports-table-grid { grid-template-columns: 1fr; }
@@ -31,128 +14,7 @@
   .result-grid { grid-template-columns: 1fr; }
   .page-body,
   .page-header {
-    padding-left: 18px;
-    padding-right: 18px;
-  }
-
-  .page-header {
-    padding-top: 24px;
-    padding-bottom: 18px;
-  }
-
-  .page-body {
-    padding-top: 24px;
-  }
-
-  .table-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .table-wrap {
-    margin: 0 -1px;
-  }
-
-  table {
-    min-width: 720px;
-  }
-
-  .form-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .form-actions .btn {
-    width: 100%;
-  }
-
-  .search-input,
-  .filter-row,
-  .filter-select {
-    width: 100%;
-  }
-}
-
-@media (max-width: 640px) {
-  html { font-size: 15px; }
-
-  .login-page {
-    align-items: flex-start;
-    padding: 84px 16px 24px;
-  }
-
-  .login-theme-toggle {
-    top: 16px;
-    right: 16px;
-  }
-
-  .login-card {
-    padding: 32px 22px;
-    border-radius: var(--radius);
-  }
-
-  .page-title {
-    font-size: 1.35rem;
-  }
-
-  .page-body,
-  .page-header {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-
-  .form-section,
-  .stat-card,
-  .card-body {
-    padding: 18px;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 20px;
-  }
-
-  .stat-value {
-    font-size: 1.6rem;
-  }
-
-  .table-header {
-    padding: 16px;
-  }
-
-  th,
-  td {
-    padding: 11px 14px;
-  }
-
-  .result-header,
-  .result-body {
-    padding: 24px 20px;
-  }
-
-  .result-status {
-    padding: 16px;
-    flex-direction: column;
-  }
-
-  .result-actions .btn {
-    width: 100%;
-  }
-
-  .plot-container {
-    min-height: 260px;
-    padding: 0 4px 10px;
-  }
-
-  .toast-container {
-    left: 14px;
-    right: 14px;
-    bottom: 14px;
-  }
-
-  .toast {
-    max-width: none;
-    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
