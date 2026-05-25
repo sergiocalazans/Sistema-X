@@ -1,0 +1,93 @@
+:root {
+  color-scheme: light;
+
+  --bg: #F4F6FA;
+  --surface: #FFFFFF;
+  --surface-2: #F0F3F8;
+  --border: #E2E8F0;
+  --border-light: #EEF2F7;
+
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-light: #EFF6FF;
+
+  --success: #16A34A;
+  --success-bg: #F0FDF4;
+  --success-light: #DCFCE7;
+
+  --warning: #D97706;
+  --warning-bg: #FFFBEB;
+  --warning-light: #FEF3C7;
+
+  --danger: #DC2626;
+  --danger-bg: #FEF2F2;
+  --danger-light: #FEE2E2;
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --text-white: #FFFFFF;
+
+  --purple: #7C3AED;
+  --purple-bg: #F5F3FF;
+  --referral: #C2520C;
+  --referral-bg: #FFF7ED;
+  --referral-light: #FED7AA;
+  --referral-badge-bg: #FFF3E8;
+  --referral-badge-border: #FDE0C0;
+
+  --sidebar-w: 240px;
+  --header-h: 64px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+  --shadow: 0 4px 16px rgba(15,23,42,.08), 0 1px 4px rgba(15,23,42,.04);
+  --shadow-lg: 0 12px 40px rgba(15,23,42,.12), 0 4px 12px rgba(15,23,42,.06);
+
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --transition: 200ms cubic-bezier(.4,0,.2,1);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #111827;
+  --surface: #182235;
+  --surface-2: #22304A;
+  --border: #334155;
+  --border-light: #26364F;
+
+  --primary: #60A5FA;
+  --primary-hover: #93C5FD;
+  --primary-light: rgba(96,165,250,.16);
+
+  --success: #4ADE80;
+  --success-bg: rgba(74,222,128,.12);
+  --success-light: rgba(74,222,128,.22);
+
+  --warning: #FBBF24;
+  --warning-bg: rgba(251,191,36,.12);
+  --warning-light: rgba(251,191,36,.24);
+
+  --danger: #F87171;
+  --danger-bg: rgba(248,113,113,.12);
+  --danger-light: rgba(248,113,113,.22);
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+
+  --purple: #A78BFA;
+  --purple-bg: rgba(167,139,250,.14);
+  --referral: #FDBA74;
+  --referral-bg: rgba(251,146,60,.12);
+  --referral-light: rgba(251,146,60,.24);
+  --referral-badge-bg: rgba(251,146,60,.14);
+  --referral-badge-border: rgba(251,146,60,.28);
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.24), 0 1px 2px rgba(0,0,0,.18);
+  --shadow: 0 8px 24px rgba(0,0,0,.28), 0 1px 4px rgba(0,0,0,.22);
+  --shadow-lg: 0 18px 50px rgba(0,0,0,.38), 0 6px 16px rgba(0,0,0,.28);
+}

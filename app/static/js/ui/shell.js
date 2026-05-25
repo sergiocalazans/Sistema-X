@@ -2,6 +2,7 @@ import { state } from "../core/state.js";
 import { navigate } from "../core/router.js";
 import { api } from "../services/api.js";
 import { appRoot, mount, setText, template } from "./dom.js";
+import { bindThemeToggle } from "./theme.js";
 
 let authRenderer = () => {};
 
@@ -17,6 +18,8 @@ export function buildShell() {
   document.querySelectorAll(".nav-item[data-page]").forEach((el) => {
     el.addEventListener("click", () => navigate(el.dataset.page));
   });
+
+  bindThemeToggle();
 
   document.getElementById("btn-logout").addEventListener("click", async () => {
     await api("/api/auth/logout", { method: "POST", body: "{}" });

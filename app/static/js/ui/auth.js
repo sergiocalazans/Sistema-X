@@ -3,10 +3,12 @@ import { navigate } from "../core/router.js";
 import { api } from "../services/api.js";
 import { appRoot, mount, showToast, template } from "./dom.js";
 import { buildShell } from "./shell.js";
+import { bindThemeToggle } from "./theme.js";
 
 export function renderLogin() {
   const fragment = template("tpl-login");
   mount(appRoot(), fragment);
+  bindThemeToggle();
   bindAuthTabs();
   bindAuthForm();
 }

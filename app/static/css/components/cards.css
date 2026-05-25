@@ -1,0 +1,17 @@
+.card,
+.stat-card,
+.table-card,
+.form-section,
+.report-card,
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.card {
+  border-radius: var(--radius);
+}
+
+.card-body { padding: 24px; }

@@ -1,6 +1,14 @@
 import { state } from "../core/state.js";
 import { mount, setHtml, setText, template } from "../ui/dom.js";
 import { emptyState } from "../ui/formatters.js";
+import { themeColors } from "../ui/theme.js";
+
+let activeCharts = null;
+window.addEventListener("themechange", () => {
+  if (activeCharts) {
+    renderCharts(activeCharts);
+  }
+});
 
 export function renderReportsPage(el) {
   const fragment = template("tpl-reports");
@@ -15,6 +23,7 @@ export function renderReportsPage(el) {
   setHtml(fragment, "top-symptoms-table", topSymptomsTable(reports.tables.topSymptoms));
 
   mount(el, fragment);
+  activeCharts = reports.charts;
   renderCharts(reports.charts);
 }
 
@@ -34,10 +43,54 @@ function renderPlot(elementId, figure) {
     return;
   }
 
-  window.Plotly.react(el, figure.data, figure.layout, {
+  window.Plotly.react(el, figure.data, themedLayout(figure.layout), {
     responsive: true,
     displayModeBar: false,
   });
+}
+
+function themedLayout(layout) {
+  const colors = themeColors();
+
+  return {
+    ...layout,
+    paper_bgcolor: colors.surface,
+    plot_bgcolor: colors.surface,
+    font: {
+      ...layout.font,
+      color: colors.textPrimary,
+    },
+    xaxis: themedAxis(layout.xaxis, colors),
+    yaxis: themedAxis(layout.yaxis, colors),
+    legend: {
+      ...layout.legend,
+      font: {
+        ...(layout.legend?.font || {}),
+        color: colors.textPrimary,
+      },
+    },
+  };
+}
+
+function themedAxis(axis = {}, colors) {
+  return {
+    ...axis,
+    color: colors.textPrimary,
+    gridcolor: colors.border,
+    zerolinecolor: colors.border,
+    linecolor: colors.border,
+    tickfont: {
+      ...axis.tickfont,
+      color: colors.textMuted,
+    },
+    title: {
+      ...axis.title,
+      font: {
+        ...(axis.title?.font || {}),
+        color: colors.textPrimary,
+      },
+    },
+  };
 }
 
 function bySexTable(rows) {

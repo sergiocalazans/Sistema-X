@@ -3,6 +3,7 @@ import { navigate, registerPage, setUnauthenticatedRenderer } from "./core/route
 import { api } from "./services/api.js";
 import { renderLogin } from "./ui/auth.js";
 import { buildShell, setAuthRenderer } from "./ui/shell.js";
+import { initTheme } from "./ui/theme.js";
 
 import { renderAssessmentsPage } from "./pages/assessments.js";
 import { renderDashboardPage } from "./pages/dashboard.js";
@@ -18,6 +19,7 @@ registerPage("relatorios", renderReportsPage);
 
 setAuthRenderer(renderLogin);
 setUnauthenticatedRenderer(renderLogin);
+initTheme();
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
