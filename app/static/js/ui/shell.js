@@ -16,9 +16,13 @@ export function buildShell() {
   mount(appRoot(), fragment);
 
   document.querySelectorAll(".nav-item[data-page]").forEach((el) => {
-    el.addEventListener("click", () => navigate(el.dataset.page));
+    el.addEventListener("click", () => {
+      closeMobileMenu();
+      navigate(el.dataset.page);
+    });
   });
 
+  bindMobileMenu();
   bindThemeToggle();
 
   document.getElementById("btn-logout").addEventListener("click", async () => {
@@ -26,4 +30,23 @@ export function buildShell() {
     state.currentUser = null;
     authRenderer();
   });
+}
+
+function bindMobileMenu() {
+  document.getElementById("btn-mobile-menu")?.addEventListener("click", () => {
+    document.querySelector(".sidebar")?.classList.add("open");
+    document.querySelector(".sidebar-backdrop")?.classList.add("show");
+  });
+
+  document.getElementById("sidebar-backdrop")?.addEventListener("click", closeMobileMenu);
+  window.addEventListener("resize", () => {
+    if (window.matchMedia("(min-width: 1181px)").matches) {
+      closeMobileMenu();
+    }
+  });
+}
+
+function closeMobileMenu() {
+  document.querySelector(".sidebar")?.classList.remove("open");
+  document.querySelector(".sidebar-backdrop")?.classList.remove("show");
 }

@@ -7,15 +7,18 @@ import { initTheme } from "./ui/theme.js";
 
 import { renderAssessmentsPage } from "./pages/assessments.js";
 import { renderDashboardPage } from "./pages/dashboard.js";
-import { renderPatientsPage } from "./pages/patients.js";
+import { renderPatientFormPage, renderPatientsPage } from "./pages/patients.js";
 import { renderReportsPage } from "./pages/reports.js";
+import { renderSettingsPage } from "./pages/settings.js";
 import { renderTriagePage } from "./pages/triage.js";
 
 registerPage("dashboard", renderDashboardPage);
 registerPage("historico", renderPatientsPage);
+registerPage("paciente-cadastro", renderPatientFormPage);
 registerPage("triagem", renderTriagePage);
 registerPage("avaliacoes", renderAssessmentsPage);
 registerPage("relatorios", renderReportsPage);
+registerPage("configuracoes", renderSettingsPage);
 
 setAuthRenderer(renderLogin);
 setUnauthenticatedRenderer(renderLogin);

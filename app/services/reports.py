@@ -42,7 +42,7 @@ def _assessments_frame(db, profissional_id):
         "recommendation": "Encaminhar" if row.encaminhar else "Não prioritário",
         "encaminhar": bool(row.encaminhar),
         "date": row.realizado_em,
-        "month": row.realizado_em.strftime("%Y-%m"),
+        "month": pd.Period(row.realizado_em, freq="M"),
         "patient": row.nome,
         "sex": "Masculino" if row.sexo.value == "masculino" else "Feminino",
         "age": _age(row.data_nascimento),
@@ -188,9 +188,30 @@ def _assessments_by_month_chart(assessments):
     if assessments.empty:
         return _empty_figure("Sem avaliações por período")
 
-    monthly = assessments.groupby("month").size().reset_index(name="total")
-    fig = px.bar(monthly, x="month", y="total", labels={"month": "Mês", "total": "Avaliações"})
+    monthly_counts = assessments.groupby("month").size()
+    months = pd.period_range(monthly_counts.index.min(), monthly_counts.index.max(), freq="M")
+    monthly = (
+        monthly_counts
+        .reindex(months, fill_value=0)
+        .rename_axis("month_period")
+        .reset_index(name="total")
+    )
+    monthly["month"] = monthly["month_period"].dt.strftime("%m/%Y")
+
+    fig = px.bar(
+        monthly,
+        x="month",
+        y="total",
+        labels={"month": "Mês", "total": "Avaliações"},
+    )
     fig.update_traces(marker_color="#2563EB")
+    fig.update_layout(
+        xaxis={
+            "categoryorder": "array",
+            "categoryarray": monthly["month"].tolist(),
+        },
+        yaxis={"dtick": 1, "rangemode": "tozero"},
+    )
     return _style_figure(fig)
 
 

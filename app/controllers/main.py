@@ -38,11 +38,26 @@ def parse_birth_date(value):
     return datetime.strptime(value, "%Y-%m-%d").date()
 
 
+def normalize_optional(value):
+    return (value or "").strip() or None
+
+
+def current_professional_patient_query(db, profissional_id):
+    return (
+        db.query(Paciente)
+        .join(Paciente.profissionais)
+        .filter(Profissional.id == profissional_id)
+    )
+
+
 def paciente_json(paciente):
     ultima = max(paciente.avaliacoes, key=lambda a: a.realizado_em, default=None)
     return {
         "id": paciente.id,
         "name": paciente.nome,
+        "cpf": paciente.cpf or "",
+        "email": paciente.email or "",
+        "telefone": paciente.telefone or "",
         "sex": "F" if paciente.sexo == Sexo.FEMININO else "M",
         "sexo": paciente.sexo.value,
         "birthDate": paciente.data_nascimento.isoformat(),
@@ -156,7 +171,87 @@ def me():
             "id": profissional.id,
             "email": profissional.email,
             "nome": profissional.nome,
+            "especialidade": profissional.especialidade,
         })
+    finally:
+        db.close()
+
+
+@main_bp.route("/api/auth/profile", methods=["PUT"])
+def update_profile():
+    profissional_id, error = require_auth()
+    if error:
+        return error
+
+    data = request.get_json(silent=True) or {}
+    nome = (data.get("nome") or "").strip()
+    email = (data.get("email") or "").strip().lower()
+    especialidade = (data.get("especialidade") or "").strip()
+
+    if not nome or not email or not especialidade:
+        return jsonify({"error": "Informe nome, e-mail e especialidade"}), 400
+
+    db = SessionLocal()
+    try:
+        existing = (
+            db.query(Profissional)
+            .filter(func.lower(Profissional.email) == email, Profissional.id != profissional_id)
+            .first()
+        )
+        if existing:
+            return jsonify({"error": "E-mail ja cadastrado por outro usuario"}), 409
+
+        profissional = db.get(Profissional, profissional_id)
+        if not profissional:
+            session.clear()
+            return jsonify({"error": "Usuario nao encontrado"}), 404
+
+        profissional.nome = nome
+        profissional.email = email
+        profissional.especialidade = especialidade
+        db.commit()
+        db.refresh(profissional)
+
+        return jsonify({
+            "id": profissional.id,
+            "email": profissional.email,
+            "nome": profissional.nome,
+            "especialidade": profissional.especialidade,
+        })
+    finally:
+        db.close()
+
+
+@main_bp.route("/api/auth/password", methods=["PUT"])
+def update_password():
+    profissional_id, error = require_auth()
+    if error:
+        return error
+
+    data = request.get_json(silent=True) or {}
+    senha_atual = data.get("senha_atual") or ""
+    nova_senha = data.get("nova_senha") or ""
+    confirmar_senha = data.get("confirmar_senha") or ""
+
+    if not senha_atual or not nova_senha or not confirmar_senha:
+        return jsonify({"error": "Preencha todos os campos de senha"}), 400
+    if len(nova_senha) < 6:
+        return jsonify({"error": "A nova senha deve ter pelo menos 6 caracteres"}), 400
+    if nova_senha != confirmar_senha:
+        return jsonify({"error": "A confirmacao da senha nao confere"}), 400
+
+    db = SessionLocal()
+    try:
+        profissional = db.get(Profissional, profissional_id)
+        if not profissional:
+            session.clear()
+            return jsonify({"error": "Usuario nao encontrado"}), 404
+        if not check_password_hash(profissional.senha_hash, senha_atual):
+            return jsonify({"error": "Senha atual invalida"}), 401
+
+        profissional.senha_hash = generate_password_hash(nova_senha)
+        db.commit()
+        return jsonify({"ok": True})
     finally:
         db.close()
 
@@ -170,8 +265,7 @@ def get_pacientes():
     db = SessionLocal()
     try:
         pacientes = (
-            db.query(Paciente)
-            .filter(Paciente.profissional_id == profissional_id)
+            current_professional_patient_query(db, profissional_id)
             .order_by(Paciente.criado_em.desc())
             .all()
         )
@@ -201,13 +295,30 @@ def create_paciente():
 
     db = SessionLocal()
     try:
-        paciente = Paciente(
-            nome=nome,
-            data_nascimento=data_nascimento,
-            sexo=sexo,
-            profissional_id=profissional_id,
-        )
-        db.add(paciente)
+        profissional = db.get(Profissional, profissional_id)
+        cpf = normalize_optional(data.get("cpf"))
+        paciente = db.query(Paciente).filter(Paciente.cpf == cpf).first() if cpf else None
+
+        if paciente:
+            paciente.nome = nome
+            paciente.email = normalize_optional(data.get("email"))
+            paciente.telefone = normalize_optional(data.get("telefone"))
+            paciente.data_nascimento = data_nascimento
+            paciente.sexo = sexo
+        else:
+            paciente = Paciente(
+                nome=nome,
+                cpf=cpf,
+                email=normalize_optional(data.get("email")),
+                telefone=normalize_optional(data.get("telefone")),
+                data_nascimento=data_nascimento,
+                sexo=sexo,
+            )
+            db.add(paciente)
+
+        if profissional and profissional not in paciente.profissionais:
+            paciente.profissionais.append(profissional)
+
         db.commit()
         db.refresh(paciente)
         return jsonify(paciente_json(paciente)), 201
@@ -225,8 +336,8 @@ def update_paciente(paciente_id):
     db = SessionLocal()
     try:
         paciente = (
-            db.query(Paciente)
-            .filter(Paciente.id == paciente_id, Paciente.profissional_id == profissional_id)
+            current_professional_patient_query(db, profissional_id)
+            .filter(Paciente.id == paciente_id)
             .first()
         )
         if not paciente:
@@ -234,6 +345,16 @@ def update_paciente(paciente_id):
 
         if "nome" in data:
             paciente.nome = (data.get("nome") or "").strip()
+        if "cpf" in data:
+            cpf = normalize_optional(data.get("cpf"))
+            existing = db.query(Paciente).filter(Paciente.cpf == cpf, Paciente.id != paciente.id).first() if cpf else None
+            if existing:
+                return jsonify({"error": "CPF ja cadastrado para outro paciente"}), 409
+            paciente.cpf = cpf
+        if "email" in data:
+            paciente.email = normalize_optional(data.get("email"))
+        if "telefone" in data:
+            paciente.telefone = normalize_optional(data.get("telefone"))
         if "sexo" in data:
             paciente.sexo = Sexo(data.get("sexo"))
         if "data_nascimento" in data:
@@ -241,6 +362,8 @@ def update_paciente(paciente_id):
 
         if not paciente.nome or not paciente.data_nascimento:
             return jsonify({"error": "Dados do paciente inválidos"}), 400
+        if paciente.data_nascimento > date.today():
+            return jsonify({"error": "Data de nascimento não pode ser futura"}), 400
 
         db.commit()
         db.refresh(paciente)
@@ -343,8 +466,8 @@ def create_avaliacao():
     db = SessionLocal()
     try:
         paciente = (
-            db.query(Paciente)
-            .filter(Paciente.id == paciente_id, Paciente.profissional_id == profissional_id)
+            current_professional_patient_query(db, profissional_id)
+            .filter(Paciente.id == paciente_id)
             .first()
         )
         if not paciente:

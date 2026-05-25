@@ -2,13 +2,14 @@ from io import BytesIO
 
 import pandas as pd
 
-from app.models import Avaliacao, Paciente
+from app.models import Avaliacao, Paciente, Profissional
 
 
 def patients_workbook(db, profissional_id):
     rows = (
         db.query(Paciente)
-        .filter(Paciente.profissional_id == profissional_id)
+        .join(Paciente.profissionais)
+        .filter(Profissional.id == profissional_id)
         .order_by(Paciente.criado_em.desc())
         .all()
     )
@@ -19,6 +20,9 @@ def patients_workbook(db, profissional_id):
         data.append({
             "ID": paciente.id,
             "Nome": paciente.nome,
+            "CPF": paciente.cpf,
+            "E-mail": paciente.email,
+            "Telefone": paciente.telefone,
             "Sexo": "Feminino" if paciente.sexo.value == "feminino" else "Masculino",
             "Data de nascimento": paciente.data_nascimento,
             "Idade": paciente.idade,
@@ -30,6 +34,9 @@ def patients_workbook(db, profissional_id):
     columns = [
         "ID",
         "Nome",
+        "CPF",
+        "E-mail",
+        "Telefone",
         "Sexo",
         "Data de nascimento",
         "Idade",

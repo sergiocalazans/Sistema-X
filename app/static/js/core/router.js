@@ -33,13 +33,14 @@ export async function navigate(pageId) {
 }
 
 function updateActiveNavigation(pageId) {
+  const activePage = pageId === "paciente-cadastro" ? "historico" : pageId;
   document.querySelectorAll(".nav-item").forEach((el) => {
-    el.classList.toggle("active", el.dataset.page === pageId);
+    el.classList.toggle("active", el.dataset.page === activePage);
   });
 }
 
 async function loadPageData(pageId) {
-  if (["dashboard", "historico", "triagem"].includes(pageId)) {
+  if (["dashboard", "historico", "triagem", "paciente-cadastro"].includes(pageId)) {
     await loadPatients();
   }
 

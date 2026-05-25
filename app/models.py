@@ -3,12 +3,20 @@ from __future__ import annotations
 from datetime import date, datetime
 from enum import Enum
 
-from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String, func, text
+from sqlalchemy import Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, String, Table, func, text
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+
+paciente_profissional = Table(
+    "paciente_profissional",
+    Base.metadata,
+    Column("paciente_id", ForeignKey("paciente.id"), primary_key=True),
+    Column("profissional_id", ForeignKey("profissional.id"), primary_key=True),
+    Column("criado_em", DateTime, server_default=func.now(), nullable=False),
+)
 
 
 class Sexo(str, Enum):
@@ -30,7 +38,10 @@ class Profissional(Base):
     especialidade: Mapped[str] = mapped_column(String(120), nullable=False)
     criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
-    pacientes: Mapped[list[Paciente]] = relationship(back_populates="profissional", cascade="all, delete-orphan")
+    pacientes: Mapped[list[Paciente]] = relationship(
+        secondary=paciente_profissional,
+        back_populates="profissionais",
+    )
     avaliacoes: Mapped[list[Avaliacao]] = relationship(back_populates="profissional")
 
 
@@ -39,12 +50,17 @@ class Paciente(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     nome: Mapped[str] = mapped_column(String(120), nullable=False)
+    cpf: Mapped[str | None] = mapped_column(String(14), nullable=True)
+    email: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    telefone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     data_nascimento: Mapped[date] = mapped_column(Date, nullable=False)
     sexo: Mapped[Sexo] = mapped_column(SQLEnum(Sexo, values_callable=enum_values, native_enum=True), nullable=False)
-    profissional_id: Mapped[int] = mapped_column(ForeignKey("profissional.id"), nullable=False)
     criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
-    profissional: Mapped[Profissional] = relationship(back_populates="pacientes")
+    profissionais: Mapped[list[Profissional]] = relationship(
+        secondary=paciente_profissional,
+        back_populates="pacientes",
+    )
     avaliacoes: Mapped[list[Avaliacao]] = relationship(back_populates="paciente", cascade="all, delete-orphan")
 
     @hybrid_property
