@@ -171,7 +171,87 @@ def me():
             "id": profissional.id,
             "email": profissional.email,
             "nome": profissional.nome,
+            "especialidade": profissional.especialidade,
         })
+    finally:
+        db.close()
+
+
+@main_bp.route("/api/auth/profile", methods=["PUT"])
+def update_profile():
+    profissional_id, error = require_auth()
+    if error:
+        return error
+
+    data = request.get_json(silent=True) or {}
+    nome = (data.get("nome") or "").strip()
+    email = (data.get("email") or "").strip().lower()
+    especialidade = (data.get("especialidade") or "").strip()
+
+    if not nome or not email or not especialidade:
+        return jsonify({"error": "Informe nome, e-mail e especialidade"}), 400
+
+    db = SessionLocal()
+    try:
+        existing = (
+            db.query(Profissional)
+            .filter(func.lower(Profissional.email) == email, Profissional.id != profissional_id)
+            .first()
+        )
+        if existing:
+            return jsonify({"error": "E-mail ja cadastrado por outro usuario"}), 409
+
+        profissional = db.get(Profissional, profissional_id)
+        if not profissional:
+            session.clear()
+            return jsonify({"error": "Usuario nao encontrado"}), 404
+
+        profissional.nome = nome
+        profissional.email = email
+        profissional.especialidade = especialidade
+        db.commit()
+        db.refresh(profissional)
+
+        return jsonify({
+            "id": profissional.id,
+            "email": profissional.email,
+            "nome": profissional.nome,
+            "especialidade": profissional.especialidade,
+        })
+    finally:
+        db.close()
+
+
+@main_bp.route("/api/auth/password", methods=["PUT"])
+def update_password():
+    profissional_id, error = require_auth()
+    if error:
+        return error
+
+    data = request.get_json(silent=True) or {}
+    senha_atual = data.get("senha_atual") or ""
+    nova_senha = data.get("nova_senha") or ""
+    confirmar_senha = data.get("confirmar_senha") or ""
+
+    if not senha_atual or not nova_senha or not confirmar_senha:
+        return jsonify({"error": "Preencha todos os campos de senha"}), 400
+    if len(nova_senha) < 6:
+        return jsonify({"error": "A nova senha deve ter pelo menos 6 caracteres"}), 400
+    if nova_senha != confirmar_senha:
+        return jsonify({"error": "A confirmacao da senha nao confere"}), 400
+
+    db = SessionLocal()
+    try:
+        profissional = db.get(Profissional, profissional_id)
+        if not profissional:
+            session.clear()
+            return jsonify({"error": "Usuario nao encontrado"}), 404
+        if not check_password_hash(profissional.senha_hash, senha_atual):
+            return jsonify({"error": "Senha atual invalida"}), 401
+
+        profissional.senha_hash = generate_password_hash(nova_senha)
+        db.commit()
+        return jsonify({"ok": True})
     finally:
         db.close()
 
