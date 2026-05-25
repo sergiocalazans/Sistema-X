@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.engine import URL, make_url
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
@@ -47,6 +47,54 @@ def init_db() -> None:
 
     create_database_if_not_exists()
     Base.metadata.create_all(bind=engine)
+    migrate_patient_schema()
+
+
+def migrate_patient_schema() -> None:
+    inspector = inspect(engine)
+    if "paciente" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("paciente")}
+    dialect = engine.dialect.name
+
+    with engine.begin() as connection:
+        if "cpf" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "cpf", "VARCHAR(14) NULL")))
+        if "email" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "email", "VARCHAR(120) NULL")))
+        if "telefone" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "telefone", "VARCHAR(20) NULL")))
+        if "profissional_id" in columns:
+            connection.execute(text(_nullable_column_sql(dialect, "paciente", "profissional_id", "INT NULL")))
+
+        if "profissional_id" in columns and "paciente_profissional" in inspector.get_table_names():
+            if dialect == "sqlite":
+                connection.execute(text("""
+                    INSERT OR IGNORE INTO paciente_profissional (paciente_id, profissional_id)
+                    SELECT id, profissional_id
+                    FROM paciente
+                    WHERE profissional_id IS NOT NULL
+                """))
+            else:
+                connection.execute(text("""
+                    INSERT IGNORE INTO paciente_profissional (paciente_id, profissional_id)
+                    SELECT id, profissional_id
+                    FROM paciente
+                    WHERE profissional_id IS NOT NULL
+                """))
+
+
+def _add_column_sql(dialect: str, table: str, column: str, definition: str) -> str:
+    if dialect == "sqlite":
+        return f"ALTER TABLE {table} ADD COLUMN {column} {definition}"
+    return f"ALTER TABLE `{table}` ADD COLUMN `{column}` {definition}"
+
+
+def _nullable_column_sql(dialect: str, table: str, column: str, definition: str) -> str:
+    if dialect == "sqlite":
+        return "SELECT 1"
+    return f"ALTER TABLE `{table}` MODIFY COLUMN `{column}` {definition}"
 
 def get_session():
     session = SessionLocal()

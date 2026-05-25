@@ -88,20 +88,23 @@ def sync_sintomas(db):
 
 def sync_pacientes_demo(db, profissional):
     for nome, sexo, nascimento in PACIENTES_DEMO:
-        paciente = db.query(Paciente).filter_by(
-            nome=nome,
-            profissional_id=profissional.id,
-        ).first()
+        paciente = (
+            db.query(Paciente)
+            .join(Paciente.profissionais)
+            .filter(Paciente.nome == nome, Profissional.id == profissional.id)
+            .first()
+        )
         if paciente:
             paciente.data_nascimento = nascimento
             paciente.sexo = sexo
         else:
-            db.add(Paciente(
+            paciente = Paciente(
                 nome=nome,
                 data_nascimento=nascimento,
                 sexo=sexo,
-                profissional_id=profissional.id,
-            ))
+            )
+            paciente.profissionais.append(profissional)
+            db.add(paciente)
 
 
 def sync_mvp_defaults(include_demo_patients=False):
