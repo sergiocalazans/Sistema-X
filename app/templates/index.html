@@ -3,21 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <title>Triagem SXF</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
   </head>
   <body>
     <div id="app"></div>
 
-    {% include "partials/login.html" %}
-    {% include "partials/shell.html" %}
-    {% include "partials/dashboard.html" %}
-    {% include "partials/patients.html" %}
-    {% include "partials/triage.html" %}
-    {% include "partials/result.html" %}
-    {% include "partials/assessments.html" %}
-    {% include "partials/reports.html" %}
+    {% include "components/login.html" %} {% include "components/shell.html" %}
+    {% include "components/dashboard.html" %} {% include
+    "components/patients.html" %} {% include "components/triage.html" %} {%
+    include "components/result.html" %} {% include
+    "components/assessments.html"%} {% include "components/reports.html" %}
 
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-    <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/app.js') }}"
+    ></script>
   </body>
 </html>
