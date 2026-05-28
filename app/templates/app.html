@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo" data-icon="pulse"></div>
+        <div class="sidebar-brand-text">
+          <div class="brand-name">Triagem SXF</div>
+          <div class="brand-sub">Sistema Clínico</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item {{ 'active' if active_page == 'dashboard' }}" href="{{ url_for('dashboard.index') }}"><span data-icon="dashboard"></span>Dashboard</a>
+        <a class="nav-item {{ 'active' if active_page == 'patients' }}" href="{{ url_for('patients.index') }}"><span data-icon="users"></span>Pacientes</a>
+        <a class="nav-item {{ 'active' if active_page == 'triage' }}" href="{{ url_for('assessments.create') }}"><span data-icon="clipboard"></span>Nova Triagem</a>
+        <a class="nav-item {{ 'active' if active_page == 'assessments' }}" href="{{ url_for('assessments.index') }}"><span data-icon="chart"></span>Histórico</a>
+        <a class="nav-item {{ 'active' if active_page == 'reports' }}" href="{{ url_for('reports.index') }}"><span data-icon="barChart"></span>Relatórios</a>
+        <a class="nav-item {{ 'active' if active_page == 'settings' }}" href="{{ url_for('settings.index') }}"><span data-icon="settings"></span>Configurações</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="nav-item theme-toggle" id="btn-theme-toggle" type="button">
+          <span class="theme-icon-dark" data-icon="moon"></span>
+          <span class="theme-icon-light" data-icon="sun"></span>
+          <span data-theme-label>Modo escuro</span>
+        </button>
+        <form action="{{ url_for('auth.logout') }}" method="post">
+          <button class="nav-item danger" type="submit"><span data-icon="logout"></span>Sair</button>
+        </form>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="mobile-topbar">
+        <button class="mobile-menu-btn" id="btn-mobile-menu" type="button" aria-label="Abrir menu">
+          <span data-icon="menu"></span>
+        </button>
+        <div class="mobile-brand">Triagem SXF</div>
+      </header>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} mb-2">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" aria-label="Fechar menu"></button>
+  </div>
+{% endblock %}
+

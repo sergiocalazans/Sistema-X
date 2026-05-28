@@ -1,0 +1,45 @@
+{% extends "app.html" %}
+
+{% block content %}
+  <div class="page-header">
+    <div class="page-title">Resultado da Triagem</div>
+    <div class="page-subtitle">Score calculado e recomendação automática</div>
+  </div>
+
+  <div class="page-body">
+    <div class="result-card card">
+      <div class="result-header">
+        <h2>{{ assessment.patient }}</h2>
+        <p>Avaliação realizada em {{ assessment.date }}</p>
+      </div>
+      <div class="result-body">
+        <div class="result-grid">
+          <div class="result-field">
+            <label>Score</label>
+            <div class="value score-val">{{ assessment.score }}</div>
+          </div>
+          <div class="result-field">
+            <label>Limiar</label>
+            <div class="value score-val">{{ assessment.threshold }}</div>
+          </div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar-track"><div class="score-bar-fill" style="width: {{ bar_width }}%"></div></div>
+          <div class="score-bar-labels"><span>0</span><span>1</span></div>
+        </div>
+        <div class="result-status {{ 'encaminhar' if should_refer else 'nao-prioritario' }}">
+          <div class="status-icon" data-icon="check"></div>
+          <div class="status-content">
+            <h3>{{ "Encaminhar para teste genético confirmatório" if should_refer else "Não prioritário para investigação neste momento" }}</h3>
+            <p>O resultado foi salvo no histórico do paciente.</p>
+          </div>
+        </div>
+        <div class="result-actions">
+          <a class="btn btn-primary" href="{{ url_for('assessments.create') }}">Nova triagem</a>
+          <a class="btn btn-outline-secondary" href="{{ url_for('assessments.index') }}">Ver histórico</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

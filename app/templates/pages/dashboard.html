@@ -1,0 +1,55 @@
+{% extends "app.html" %}
+
+{% block content %}
+  <div class="page-header">
+    <div class="page-title">Dashboard</div>
+    <div class="page-subtitle">Visão geral do sistema de triagem</div>
+  </div>
+
+  <div class="page-body">
+    <div class="stats-grid">
+      <div class="stat-card card">
+        <div class="stat-icon blue" data-icon="users"></div>
+        <div class="stat-label">Total de Pacientes</div>
+        <div class="stat-value">{{ total_patients }}</div>
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon green" data-icon="clipboard"></div>
+        <div class="stat-label">Avaliações</div>
+        <div class="stat-value">{{ total_assessments }}</div>
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon orange" data-icon="chart"></div>
+        <div class="stat-label">Encaminhamentos</div>
+        <div class="stat-value">{{ total_referrals }}</div>
+      </div>
+    </div>
+
+    <div class="table-card card">
+      <div class="table-header">
+        <span class="table-title">Avaliações Recentes</span>
+      </div>
+      <div class="table-wrap table-responsive">
+        {% if recent_assessments %}
+          <table class="table table-hover align-middle">
+            <thead><tr><th>Paciente</th><th>Sexo</th><th>Score</th><th>Resultado</th><th>Data</th></tr></thead>
+            <tbody>
+              {% for item in recent_assessments %}
+                <tr>
+                  <td class="name">{{ item.patient }}</td>
+                  <td>{{ item.sex }}</td>
+                  <td class="score">{{ item.score }}</td>
+                  <td><span class="badge rounded-pill {{ item.recommendation_key }}">{{ item.recommendation }}</span></td>
+                  <td>{{ item.date }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="empty-state"><span data-icon="clipboard"></span><p>Nenhuma avaliação registrada ainda.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

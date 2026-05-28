@@ -1,41 +1,116 @@
-import { state } from "./core/state.js";
-import { navigate, registerPage, setUnauthenticatedRenderer } from "./core/router.js";
-import { api } from "./services/api.js";
-import { renderLogin } from "./ui/auth.js";
-import { buildShell, setAuthRenderer } from "./ui/shell.js";
-import { initTheme } from "./ui/theme.js";
+import { icons } from "./core/icons.js";
 
-import { renderAssessmentsPage } from "./pages/assessments.js";
-import { renderDashboardPage } from "./pages/dashboard.js";
-import { renderPatientFormPage, renderPatientsPage } from "./pages/patients.js";
-import { renderReportsPage } from "./pages/reports.js";
-import { renderSettingsPage } from "./pages/settings.js";
-import { renderTriagePage } from "./pages/triage.js";
+const THEME_KEY = "sxf-theme";
 
-registerPage("dashboard", renderDashboardPage);
-registerPage("historico", renderPatientsPage);
-registerPage("paciente-cadastro", renderPatientFormPage);
-registerPage("triagem", renderTriagePage);
-registerPage("avaliacoes", renderAssessmentsPage);
-registerPage("relatorios", renderReportsPage);
-registerPage("configuracoes", renderSettingsPage);
+function currentTheme() {
+  return document.documentElement.dataset.theme || "light";
+}
 
-setAuthRenderer(renderLogin);
-setUnauthenticatedRenderer(renderLogin);
-initTheme();
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.bsTheme = theme;
+}
 
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const user = await api("/api/auth/me");
-    if (!user.authenticated) {
-      renderLogin();
-      return;
-    }
+function initTheme() {
+  const stored = localStorage.getItem(THEME_KEY);
+  const preferred = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  applyTheme(stored === "dark" || stored === "light" ? stored : preferred);
+  syncThemeButtons();
+}
 
-    state.currentUser = user;
-    buildShell();
-    navigate("dashboard");
-  } catch {
-    renderLogin();
-  }
+function syncThemeButtons() {
+  const dark = currentTheme() === "dark";
+  document.querySelectorAll(".theme-toggle").forEach((button) => {
+    button.setAttribute("aria-label", dark ? "Ativar modo claro" : "Ativar modo escuro");
+    button.setAttribute("title", dark ? "Ativar modo claro" : "Ativar modo escuro");
+    button.querySelector("[data-theme-label]").textContent = dark ? "Modo claro" : "Modo escuro";
+  });
+}
+
+function bindTheme() {
+  document.querySelectorAll(".theme-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextTheme = currentTheme() === "dark" ? "light" : "dark";
+      localStorage.setItem(THEME_KEY, nextTheme);
+      applyTheme(nextTheme);
+      syncThemeButtons();
+      renderCharts();
+    });
+  });
+}
+
+function hydrateIcons(root = document) {
+  root.querySelectorAll("[data-icon]").forEach((el) => {
+    el.innerHTML = icons[el.dataset.icon] || "";
+  });
+}
+
+function bindShell() {
+  const sidebar = document.querySelector(".sidebar");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  document.getElementById("btn-mobile-menu")?.addEventListener("click", () => {
+    sidebar?.classList.add("open");
+    backdrop?.classList.add("show");
+  });
+  backdrop?.addEventListener("click", () => {
+    sidebar?.classList.remove("open");
+    backdrop.classList.remove("show");
+  });
+}
+
+function bindSymptoms() {
+  document.querySelectorAll(".symptom-input").forEach((input) => {
+    input.addEventListener("change", () => {
+      input.closest(".symptom-item").classList.toggle("checked", input.checked);
+    });
+  });
+}
+
+function themeColors() {
+  const styles = getComputedStyle(document.documentElement);
+  return {
+    surface: styles.getPropertyValue("--surface").trim(),
+    textPrimary: styles.getPropertyValue("--text-primary").trim(),
+    textMuted: styles.getPropertyValue("--text-muted").trim(),
+    border: styles.getPropertyValue("--border-light").trim(),
+  };
+}
+
+function renderCharts() {
+  if (!window.Plotly || !window.SXF_CHARTS) return;
+
+  const map = {
+    "chart-recommendations": window.SXF_CHARTS.recommendations,
+    "chart-score-sex": window.SXF_CHARTS.scoreBySex,
+    "chart-monthly": window.SXF_CHARTS.assessmentsByMonth,
+    "chart-symptoms": window.SXF_CHARTS.topSymptoms,
+  };
+
+  Object.entries(map).forEach(([id, figure]) => {
+    const el = document.getElementById(id);
+    if (!el || !figure) return;
+    window.Plotly.react(el, figure.data, themedLayout(figure.layout || {}), {
+      responsive: true,
+      displayModeBar: false,
+    });
+  });
+}
+
+function themedLayout(layout) {
+  const colors = themeColors();
+  return {
+    ...layout,
+    paper_bgcolor: colors.surface,
+    plot_bgcolor: colors.surface,
+    font: { ...(layout.font || {}), color: colors.textPrimary },
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
+  hydrateIcons();
+  bindTheme();
+  bindShell();
+  bindSymptoms();
+  renderCharts();
 });
