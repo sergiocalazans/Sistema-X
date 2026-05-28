@@ -1,0 +1,7 @@
+.patient-actions,
+.result-actions {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+}

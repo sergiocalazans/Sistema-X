@@ -6,8 +6,8 @@ export function sexLabel(sex) {
 
 export function recBadge(recommendation) {
   return recommendation === "encaminhar"
-    ? `<span class="badge encaminhar">Encaminhar</span>`
-    : `<span class="badge nao-prio">Não prioritário</span>`;
+    ? `<span class="badge rounded-pill encaminhar">Encaminhar</span>`
+    : `<span class="badge rounded-pill nao-prio">Não prioritário</span>`;
 }
 
 export function emptyState(text) {

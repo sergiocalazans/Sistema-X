@@ -1,3 +1,17 @@
+﻿::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+
 @media (max-width: 1180px) {
   .sidebar {
     width: min(82vw, var(--sidebar-w));
@@ -5,9 +19,17 @@
     box-shadow: var(--shadow-lg);
   }
 
-  .sidebar.open { transform: translateX(0); }
-  .main-content { margin-left: 0; }
-  .mobile-topbar { display: flex; }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .mobile-topbar {
+    display: flex;
+  }
 
   .reports-kpi-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -19,76 +41,62 @@
 }
 
 @media (max-width: 900px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .stats-grid,
   .reports-kpi-grid,
   .reports-grid,
-  .reports-table-grid { grid-template-columns: 1fr; }
-  .symptoms-grid { grid-template-columns: 1fr; }
+  .reports-table-grid,
+  .settings-grid,
+  .symptoms-grid,
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
     gap: 0;
   }
-  .result-grid { grid-template-columns: 1fr; }
+
   .page-body,
   .page-header {
-    padding-left: 18px;
-    padding-right: 18px;
+    padding-right: 1.125rem;
+    padding-left: 1.125rem;
   }
 
-  .page-header {
-    padding-top: 24px;
-    padding-bottom: 18px;
-  }
-
-  .page-body {
-    padding-top: 24px;
-  }
-
-  .table-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .table-wrap {
-    margin: 0 -1px;
-  }
-
-  table {
-    min-width: 720px;
-  }
-
+  .table-header,
+  .patient-table-header,
+  .patient-actions,
   .form-actions {
     align-items: stretch;
     flex-direction: column;
   }
 
+  .patient-actions .btn,
   .form-actions .btn {
     width: 100%;
   }
 
-  .search-input,
-  .filter-row,
-  .filter-select {
-    width: 100%;
+  .table {
+    min-width: 720px;
   }
 }
 
 @media (max-width: 640px) {
-  html { font-size: 15px; }
+  html {
+    font-size: 15px;
+  }
 
   .login-page {
     align-items: flex-start;
-    padding: 84px 16px 24px;
+    padding: 5.25rem 1rem 1.5rem;
   }
 
   .login-theme-toggle {
-    top: 16px;
-    right: 16px;
+    top: 1rem;
+    right: 1rem;
   }
 
   .login-card {
-    padding: 32px 22px;
-    border-radius: var(--radius);
+    padding: 2rem 1.375rem;
   }
 
   .page-title {
@@ -97,43 +105,32 @@
 
   .page-body,
   .page-header {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-right: .875rem;
+    padding-left: .875rem;
   }
 
   .form-section,
-  .stat-card,
-  .card-body {
-    padding: 18px;
+  .stat-card {
+    padding: 1.125rem;
   }
 
   .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 20px;
+    gap: .875rem;
+    margin-bottom: 1.25rem;
   }
 
   .stat-value {
     font-size: 1.6rem;
   }
 
-  .table-header {
-    padding: 16px;
-  }
-
-  th,
-  td {
-    padding: 11px 14px;
-  }
-
   .result-header,
   .result-body {
-    padding: 24px 20px;
+    padding: 1.5rem 1.25rem;
   }
 
   .result-status {
-    padding: 16px;
     flex-direction: column;
+    padding: 1rem;
   }
 
   .result-actions .btn {
@@ -142,17 +139,17 @@
 
   .plot-container {
     min-height: 260px;
-    padding: 0 4px 10px;
+    padding: 0 .25rem .625rem;
   }
 
   .toast-container {
-    left: 14px;
-    right: 14px;
-    bottom: 14px;
+    right: .875rem;
+    bottom: .875rem;
+    left: .875rem;
   }
 
   .toast {
-    max-width: none;
     width: 100%;
+    max-width: none;
   }
 }

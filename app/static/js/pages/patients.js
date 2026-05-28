@@ -32,7 +32,7 @@ function patientsTable() {
     return emptyState("Cadastre o primeiro paciente para iniciar a triagem.");
   }
 
-  return `<table>
+  return `<table class="table table-hover align-middle">
     <thead>
       <tr>
         <th>ID</th>
@@ -60,7 +60,7 @@ function patientRow(patient) {
     <td>${sexLabel(patient.sex)}</td>
     <td>${patient.age}</td>
     <td class="score">${patient.score}</td>
-    <td><button class="btn btn-secondary btn-sm edit-patient" data-id="${patient.id}">Editar</button></td>
+    <td><button class="btn btn-outline-secondary btn-sm edit-patient" data-id="${patient.id}">Editar</button></td>
   </tr>`;
 }
 

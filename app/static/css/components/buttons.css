@@ -2,27 +2,56 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 20px;
+  gap: .5rem;
+  min-height: 2.5rem;
+  padding: .625rem 1.25rem;
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  font-size: .875rem;
   font-weight: 600;
-  transition: all var(--transition);
+  font-size: .875rem;
+  line-height: 1.2;
+  text-decoration: none;
   white-space: nowrap;
+  transition: color var(--transition), background var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
 
-.btn svg { width: 16px; height: 16px; }
-.btn-primary { background: var(--primary); color: var(--text-white); }
-.btn-primary:hover { background: var(--primary-hover); box-shadow: 0 4px 12px rgba(37,99,235,.3); }
+.btn svg {
+  width: 1rem;
+  height: 1rem;
+}
 
+.btn-primary {
+  color: var(--text-white);
+  background: var(--primary);
+  border-color: var(--primary);
+  --bs-btn-bg: var(--primary);
+  --bs-btn-border-color: var(--primary);
+  --bs-btn-hover-bg: var(--primary-hover);
+  --bs-btn-hover-border-color: var(--primary-hover);
+}
+
+.btn-primary:hover {
+  color: var(--text-white);
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-outline-secondary,
 .btn-secondary {
-  background: var(--surface);
   color: var(--text-secondary);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border-color: var(--border);
 }
 
-.btn-secondary:hover { background: var(--surface-2); color: var(--text-primary); }
-.btn-ghost { color: var(--text-secondary); padding: 10px 16px; }
-.btn-ghost:hover { background: var(--surface-2); color: var(--text-primary); }
-.btn-lg { padding: 13px 28px; font-size: .95rem; border-radius: var(--radius); }
-.btn-sm { padding: 6px 14px; font-size: .8rem; }
+.btn-outline-secondary:hover,
+.btn-secondary:hover {
+  color: var(--text-primary);
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.btn-sm {
+  min-height: 2rem;
+  padding: .375rem .875rem;
+  font-size: .8rem;
+}

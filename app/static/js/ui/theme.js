@@ -35,6 +35,7 @@ export function themeColors() {
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.bsTheme = theme;
 }
 
 function getStoredTheme() {
