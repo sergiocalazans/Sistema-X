@@ -5,11 +5,11 @@
   </div>
 
   <div class="page-body">
-    <div class="table-card patient-table">
+    <div class="table-card card patient-table">
       <div class="table-header patient-table-header">
         <span class="table-title">Pacientes cadastrados</span>
         <div class="patient-actions">
-          <button class="btn btn-secondary btn-sm" id="export-patients">
+          <button class="btn btn-outline-secondary btn-sm" id="export-patients">
             Exportar para Excel
           </button>
           <button class="btn btn-primary btn-sm" id="new-patient">
@@ -17,7 +17,7 @@
           </button>
         </div>
       </div>
-      <div class="table-wrap" data-slot="patients-table"></div>
+      <div class="table-wrap table-responsive" data-slot="patients-table"></div>
     </div>
   </div>
 </template>
@@ -30,34 +30,34 @@
   </div>
 
   <div class="page-body">
-    <div class="form-section patient-form-section">
+    <div class="form-section card patient-form-section">
       <div class="form-section-title">Dados do paciente</div>
       <form id="patient-form">
         <input type="hidden" id="patient-id" />
         <div class="form-grid patient-form-grid">
           <div class="form-group">
             <label class="form-label">Nome</label>
-            <input id="patient-name" class="form-input" required />
+            <input id="patient-name" class="form-input form-control" required />
           </div>
           <div class="form-group">
             <label class="form-label">CPF</label>
-            <input id="patient-cpf" class="form-input" maxlength="14" />
+            <input id="patient-cpf" class="form-input form-control" maxlength="14" />
           </div>
           <div class="form-group">
             <label class="form-label">E-mail</label>
-            <input id="patient-email" class="form-input" type="email" />
+            <input id="patient-email" class="form-input form-control" type="email" />
           </div>
           <div class="form-group">
             <label class="form-label">Telefone</label>
-            <input id="patient-phone" class="form-input" maxlength="20" />
+            <input id="patient-phone" class="form-input form-control" maxlength="20" />
           </div>
           <div class="form-group">
             <label class="form-label">Data de nascimento</label>
-            <input id="patient-birth" class="form-input" type="date" required />
+            <input id="patient-birth" class="form-input form-control" type="date" required />
           </div>
           <div class="form-group">
             <label class="form-label">Sexo</label>
-            <select id="patient-sex" class="form-input" required>
+            <select id="patient-sex" class="form-input form-select" required>
               <option value="feminino">Feminino</option>
               <option value="masculino">Masculino</option>
             </select>
@@ -67,7 +67,7 @@
           <button class="btn btn-primary" type="submit">
             <span data-icon="plus"></span>Salvar paciente
           </button>
-          <button class="btn btn-secondary" type="button" id="patient-clear">
+          <button class="btn btn-outline-secondary" type="button" id="patient-clear">
             Limpar
           </button>
         </div>

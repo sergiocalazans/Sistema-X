@@ -21,7 +21,7 @@ function recentAssessmentsTable() {
     return emptyState("Nenhuma avaliação registrada ainda.");
   }
 
-  return `<table>
+  return `<table class="table table-hover align-middle">
     <thead><tr><th>Paciente</th><th>Sexo</th><th>Score</th><th>Resultado</th><th>Data</th></tr></thead>
     <tbody>${state.assessments.slice(0, 6).map(recentAssessmentRow).join("")}</tbody>
   </table>`;
