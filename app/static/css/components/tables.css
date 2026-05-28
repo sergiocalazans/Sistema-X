@@ -1,51 +1,84 @@
 .table-card {
-  border-radius: var(--radius);
   overflow: hidden;
+  border-radius: var(--radius);
 }
 
 .table-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 20px 24px 16px;
+  gap: .75rem;
+  padding: 1.25rem 1.5rem 1rem;
   border-bottom: 1px solid var(--border-light);
 }
 
 .table-title {
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
 }
 
-.table-wrap { overflow-x: auto; }
+.table-wrap {
+  overflow-x: auto;
+}
 
+.table,
 table {
+  --bs-table-bg: var(--surface);
+  --bs-table-color: var(--text-secondary);
+  --bs-table-border-color: var(--border-light);
+  --bs-table-hover-bg: var(--bg);
   width: 100%;
+  margin-bottom: 0;
   border-collapse: collapse;
+  color: var(--text-secondary);
+  background: var(--surface);
 }
 
+.table th,
 th {
-  text-align: left;
-  padding: 12px 24px;
-  font-size: .75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--text-muted);
+  padding: .75rem 1.5rem;
   border-bottom: 1px solid var(--border-light);
+  color: var(--text-muted);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: left;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
+.table td,
 td {
-  padding: 14px 24px;
-  font-size: .875rem;
-  color: var(--text-secondary);
+  padding: .875rem 1.5rem;
   border-bottom: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: .875rem;
+  vertical-align: middle;
 }
 
-tr:last-child td { border-bottom: none; }
-tbody tr { transition: background var(--transition); }
-tbody tr:hover { background: var(--bg); }
-td.name { font-weight: 500; color: var(--text-primary); }
-td.score { font-weight: 600; font-family: var(--mono); color: var(--text-primary); }
+.table tbody tr,
+tbody tr {
+  transition: background var(--transition);
+}
+
+.table tbody tr:hover,
+tbody tr:hover {
+  background: var(--bg);
+}
+
+.table tbody tr:last-child td,
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+td.name {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+td.score {
+  color: var(--text-primary);
+  font-family: var(--mono);
+  font-weight: 600;
+}
