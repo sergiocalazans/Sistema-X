@@ -98,7 +98,7 @@ function bySexTable(rows) {
     return emptyState("Sem avaliações para agrupar por sexo.");
   }
 
-  return `<table>
+  return `<table class="table table-hover align-middle">
     <thead>
       <tr>
         <th>Sexo</th>
@@ -129,7 +129,7 @@ function topSymptomsTable(rows) {
     return emptyState("Sem sintomas marcados nas avaliações.");
   }
 
-  return `<table>
+  return `<table class="table table-hover align-middle">
     <thead>
       <tr>
         <th>Sintoma</th>

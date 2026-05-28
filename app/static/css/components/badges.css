@@ -1,27 +1,23 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 5px 12px;
+  width: fit-content;
+  padding: .3125rem .75rem;
   border-radius: 999px;
   font-size: .75rem;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1;
   white-space: nowrap;
 }
 
 .badge.encaminhar {
   background: var(--referral-badge-bg);
-  color: var(--referral);
   border: 1px solid var(--referral-badge-border);
+  color: var(--referral);
 }
 
 .badge.nao-prio {
   background: var(--success-bg);
-  color: var(--success);
   border: 1px solid var(--success-light);
-}
-
-.badge.pending {
-  background: var(--warning-bg);
-  color: var(--warning);
-  border: 1px solid var(--warning-light);
+  color: var(--success);
 }
