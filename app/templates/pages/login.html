@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <div class="login-page">
+    <button class="login-theme-toggle theme-toggle" id="btn-theme-toggle" type="button">
+      <span class="theme-icon-dark" data-icon="moon"></span>
+      <span class="theme-icon-light" data-icon="sun"></span>
+      <span data-theme-label>Modo escuro</span>
+    </button>
+
+    <div class="login-card card fade-in">
+      <div class="login-brand">
+        <div class="login-logo" data-icon="pulse"></div>
+        <div class="login-title">Sistema de Triagem Clínica</div>
+        <div class="login-subtitle">Síndrome do X Frágil</div>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <div class="auth-tabs">
+        <a class="auth-tab {{ 'active' if mode != 'register' }}" href="{{ url_for('auth.login') }}">Entrar</a>
+        <a class="auth-tab {{ 'active' if mode == 'register' }}" href="{{ url_for('auth.register') }}">Cadastrar</a>
+      </div>
+
+      <form class="login-form" method="post" action="{{ url_for('auth.register') if mode == 'register' else url_for('auth.login') }}">
+        {% if mode == 'register' %}
+          <div class="form-group">
+            <label class="form-label">Nome</label>
+            <input name="nome" class="form-input form-control" value="Profissional" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Especialidade</label>
+            <input name="especialidade" class="form-input form-control" value="Saúde" required />
+          </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input name="email" class="form-input form-control" type="email" value="contato@sxf.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <input name="senha" class="form-input form-control" type="password" value="123456" required />
+        </div>
+        <button class="btn btn-primary btn-login" type="submit">{{ "Cadastrar" if mode == "register" else "Entrar" }}</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

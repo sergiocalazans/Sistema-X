@@ -1,0 +1,50 @@
+{% extends "app.html" %}
+
+{% block content %}
+  <div class="page-header">
+    <a class="back-link" href="{{ url_for('patients.index') }}">Voltar para pacientes</a>
+    <div class="page-title">{{ "Editar Paciente" if patient else "Cadastrar Paciente" }}</div>
+    <div class="page-subtitle">Dados cadastrais e de contato do paciente</div>
+  </div>
+
+  <div class="page-body">
+    <div class="form-section card patient-form-section">
+      <div class="form-section-title">Dados do paciente</div>
+      <form method="post">
+        <div class="form-grid patient-form-grid">
+          <div class="form-group">
+            <label class="form-label">Nome</label>
+            <input name="nome" class="form-input form-control" value="{{ patient.nome if patient else '' }}" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">CPF</label>
+            <input name="cpf" class="form-input form-control" maxlength="14" value="{{ patient.cpf if patient and patient.cpf else '' }}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-mail</label>
+            <input name="email" class="form-input form-control" type="email" value="{{ patient.email if patient and patient.email else '' }}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telefone</label>
+            <input name="telefone" class="form-input form-control" maxlength="20" value="{{ patient.telefone if patient and patient.telefone else '' }}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data de nascimento</label>
+            <input name="data_nascimento" class="form-input form-control" type="date" value="{{ patient.data_nascimento.isoformat() if patient else '' }}" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sexo</label>
+            <select name="sexo" class="form-input form-select" required>
+              <option value="feminino" {{ 'selected' if patient and patient.sexo.value == 'feminino' }}>Feminino</option>
+              <option value="masculino" {{ 'selected' if patient and patient.sexo.value == 'masculino' }}>Masculino</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit"><span data-icon="plus"></span>Salvar paciente</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('patients.index') }}">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

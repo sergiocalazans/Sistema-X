@@ -1,0 +1,47 @@
+{% extends "app.html" %}
+
+{% block content %}
+  <div class="page-header">
+    <div class="page-title">Nova Triagem</div>
+    <div class="page-subtitle">Checklist clínico com score automático</div>
+  </div>
+
+  <div class="page-body">
+    <form class="form-section card" method="post">
+      <div class="form-group">
+        <label class="form-label">Paciente</label>
+        <select name="paciente_id" class="form-input form-select" required>
+          <option value="">Selecione</option>
+          {% for patient in patients %}
+            <option value="{{ patient.id }}">{{ patient.nome }} - {{ "Feminino" if patient.sexo.value == "feminino" else "Masculino" }}, {{ patient.idade }} anos</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-section-title">Sintomas clínicos associados à SXF</div>
+      {% if symptoms %}
+        <div class="symptoms-grid">
+          {% for symptom in symptoms %}
+            <label class="symptom-item">
+              <input type="checkbox" class="symptom-input" name="sintomas" value="{{ symptom.id }}">
+              <span class="symptom-checkbox"><span data-icon="check"></span></span>
+              <span><span class="symptom-name">{{ symptom.descricao }}</span><small>{{ symptom.categoria }}</small></span>
+            </label>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state"><span data-icon="clipboard"></span><p>Nenhum sintoma cadastrado no banco.</p></div>
+      {% endif %}
+
+      <div class="form-group observation-field">
+        <label class="form-label">Observação</label>
+        <textarea name="observacao" class="form-input form-control" rows="3" maxlength="500"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Salvar Avaliação</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+

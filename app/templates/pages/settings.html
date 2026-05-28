@@ -1,0 +1,54 @@
+{% extends "app.html" %}
+
+{% block content %}
+  <div class="page-header">
+    <div class="page-title">Configurações</div>
+    <div class="page-subtitle">Atualize seu login e senha de acesso</div>
+  </div>
+
+  <div class="page-body">
+    <div class="settings-grid">
+      <section class="form-section card">
+        <div class="form-section-title">Dados de login</div>
+        <form method="post" action="{{ url_for('settings.profile') }}">
+          <div class="form-group">
+            <label class="form-label">Nome</label>
+            <input name="nome" class="form-input form-control" value="{{ professional.nome }}" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-mail de login</label>
+            <input name="email" class="form-input form-control" type="email" value="{{ professional.email }}" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Especialidade</label>
+            <input name="especialidade" class="form-input form-control" value="{{ professional.especialidade }}" required />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Salvar login</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="form-section card">
+        <div class="form-section-title">Alterar senha</div>
+        <form method="post" action="{{ url_for('settings.password') }}">
+          <div class="form-group">
+            <label class="form-label">Senha atual</label>
+            <input name="senha_atual" class="form-input form-control" type="password" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nova senha</label>
+            <input name="nova_senha" class="form-input form-control" type="password" minlength="6" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmar nova senha</label>
+            <input name="confirmar_senha" class="form-input form-control" type="password" minlength="6" required />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Alterar senha</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+{% endblock %}
