@@ -1,250 +1,242 @@
 # 🧬 Sistema-X — Sistema de Triagem Clínica para Síndrome do X Frágil (SXF)
 
-O **Sistema-X** é uma aplicação web desenvolvida para auxiliar profissionais da saúde na **triagem clínica da Síndrome do X Frágil (SXF)**, contribuindo para a identificação precoce de pacientes com maior probabilidade de apresentar a condição e apoiando decisões sobre encaminhamento para testes genéticos confirmatórios.
+Sistema web para apoio à triagem clínica da Síndrome do X Frágil (SXF) e ao acompanhamento da jornada do paciente no contexto do Instituto IBK.
 
-A plataforma permite o cadastro de pacientes, realização de avaliações clínicas com base em sintomas associados à SXF, cálculo automatizado de score clínico e armazenamento do histórico de triagens realizadas.
-
----
+O Sistema-X permite cadastrar pacientes, registrar familiares, anexar documentos anteriores, conduzir pré-avaliação, calcular score clínico, registrar encaminhamento para exame genético, acompanhar o recebimento do resultado e documentar o suporte pós-diagnóstico.
 
 ## 📌 Objetivo
 
-Reduzir o subdiagnóstico da **Síndrome do X Frágil**, padronizando avaliações clínicas e auxiliando profissionais da saúde na priorização de encaminhamentos para exames genéticos.
+Apoiar profissionais da saúde e equipes técnicas na organização da jornada do paciente com suspeita de SXF, reduzindo perda de informações entre cadastro, triagem, exame, resultado e suporte familiar.
 
----
+O sistema também busca manter registros compatíveis com boas práticas de proteção de dados, com campos para consentimento, autorização de comunicação e documentação de finalidade assistencial.
+
+## 🧭 Jornada Atendida
+
+O fluxo implementado segue a jornada levantada para o Instituto:
+
+1. Cadastro do paciente.
+2. Recepção pela equipe técnica.
+3. Avaliação da requisição médica.
+4. Triagem clínica e socioeconômica.
+5. Encaminhamento para realização do exame.
+6. Recebimento do resultado.
+7. Suporte pós-diagnóstico.
+
+Para resultados positivos, o sistema permite registrar:
+
+- Acolhimento familiar.
+- Aconselhamento genético.
+- Inserção em atividades do Programa Eu Digo X.
+
+Para resultados negativos, o sistema permite registrar:
+
+- Orientações sobre outras possibilidades diagnósticas.
+- Encaminhamento para grupos de apoio ou assessoramento.
 
 ## ✨ Funcionalidades
 
 ### 👤 Autenticação
 
-- Login de profissionais da saúde
-- Cadastro de usuários
-- Senhas armazenadas com hash
-- Controle de acesso ao sistema
+- Login de profissionais.
+- Cadastro de usuários.
+- Senhas armazenadas com hash.
+- Controle de acesso às áreas internas.
 
 ### 🩺 Gestão de Pacientes
 
-- Cadastro de pacientes
-- Edição de informações cadastrais
-- Registro de:
-  - Nome
-  - Idade
-  - Sexo biológico
+- Dados cadastrais e de contato.
+- Nome social.
+- Origem do encaminhamento.
+- Endereço.
+- Status atual na jornada.
+- Avaliação da requisição médica.
+- Triagem clínica.
+- Triagem socioeconômica.
+- Características físicas.
+- Fotos de rosto, perfil e lado.
+- Registro de conformidade LGPD.
+- Autorização para envio de e-mails.
+
+### 👥 Familiares
+
+- Cadastro de familiares vinculados ao paciente.
+- Indicação de cadastro antes ou após avaliação.
+- Contato telefônico e e-mail.
+- Observações por familiar.
+
+### 📁 Documentos Anteriores
+
+- Registro de avaliações anteriores.
+- Requisições médicas.
+- Resultados de exames.
+- Outros documentos relevantes.
+- Upload de arquivos associados ao paciente.
 
 ### 📋 Avaliação Clínica
 
-- Checklist de sintomas associados à SXF
-- Registro de sintomas cognitivos, físicos e comportamentais
-- Cálculo automático do score clínico
-- Aplicação de pesos específicos por sintoma
-- Comparação automática com limiares definidos por sexo
+- Checklist de sintomas associados à SXF.
+- Registro de sintomas cognitivos, físicos e comportamentais.
+- Cálculo automático do score clínico.
+- Aplicação de pesos por sintoma e por sexo.
+- Comparação automática com limiar de decisão.
 
 ### 🧠 Triagem Inteligente
 
-- Recomendação automática de encaminhamento para teste genético
-- Classificação do paciente:
-  - Prioritário
-  - Não prioritário
+- Registro do resultado do exame.
+- Classificação do tipo do resultado.
+- Registro de encaminhamento para exame.
+- Plano pós-diagnóstico.
+- Suporte pós-diagnóstico.
+- Geração de documento textual da jornada do paciente.
+- Envio de e-mail via SMTP quando configurado.
 
 ### 📊 Histórico e Relatórios
 
-- Histórico de avaliações realizadas
-- Dashboard com métricas gerais
-- Indicadores estatísticos
-- Relatórios analíticos com gráficos Plotly
-- Exportação para Excel
-
----
+- Dashboard com métricas gerais.
+- Histórico de avaliações.
+- Relatórios analíticos com gráficos Plotly.
+- Exportação de pacientes para Excel.
+- Exportação de avaliações para Excel.
 
 # ⚙️ Regras de Negócio
 
-O sistema segue as seguintes regras principais:
-
-### Cálculo do Score Clínico
-
-O score é obtido pela soma ponderada dos sintomas:
+O score é calculado pela soma ponderada dos sintomas presentes:
 
 ```text
-Score = Σ(peso × presença_do_sintoma)
+Score = soma(peso do sintoma presente)
 ```
 
-Onde:
-
-- Sintoma presente → `1`
-- Sintoma ausente → `0`
-
-### Limiares de decisão
+Limiares padrão:
 
 | Sexo      | Limiar |
-| --------- | ------ |
-| Masculino | 0.56   |
-| Feminino  | 0.55   |
+| --------- | -----: |
+| Masculino |   0.56 |
+| Feminino  |   0.55 |
 
-### Encaminhamento
-
-Se:
-
-```text
-Score ≥ limiar
-```
-
-Resultado:
-
-```text
-Encaminhar para teste genético confirmatório
-```
-
-Caso contrário:
-
-```text
-Paciente não prioritário no momento
-```
-
----
-
-# 🏗️ Arquitetura do Projeto
-
-O sistema segue arquitetura modular baseada em Flask:
-
-```text
-Sistema-X/
-│
-├── app/
-│   ├── __init__.py              # Factory Flask
-│   ├── database.py              # Configuração banco
-│   ├── models.py                # Modelos SQLAlchemy
-│   │
-│   ├── controllers/
-│   │      main.py               # Rotas/API
-│   │
-│   ├── services/
-│   │      seed_data.py          # Dados iniciais
-│   │      reports.py            # Relatórios
-│   │      exports.py            # Exportação
-│   │
-│   ├── templates/
-│   │      index.html
-│   │      partials/
-│   │
-│   └── static/
-│          ├── css/
-│          └── js/
-│                ├── core/
-│                ├── pages/
-│                ├── services/
-│                └── ui/
-│
-├── config.py
-├── run.py
-├── seed.py
-├── requirements.txt
-└── .env.example
-```
-
----
+Quando o score é maior ou igual ao limiar, o sistema recomenda encaminhamento para teste genético confirmatório.
 
 # 🛠 Tecnologias Utilizadas
-
-## Back-end
 
 - Python
 - Flask
 - SQLAlchemy
-- PyMySQL
-
-## Banco de Dados
-
-- SQL
 - MySQL
-
-## Front-end
-
-- HTML5
-- CSS3
-- JavaScript Modular
-
-## Relatórios e Dados
-
+- PyMySQL
 - Pandas
 - Plotly
 - OpenPyXL
+- HTML
+- CSS
+- JavaScript
 
-## Desenvolvimento
+# 🏗️ Arquitetura do Projeto
 
-- VS Code
-- Git
-- GitHub
-
----
+```text
+Sistema-X/
+├── app/
+│   ├── __init__.py
+│   ├── database.py
+│   ├── models.py
+│   ├── assessments/
+│   ├── auth/
+│   ├── dashboard/
+│   ├── patients/
+│   ├── reports/
+│   ├── settings/
+│   ├── services/
+│   │   ├── exports.py
+│   │   ├── reports.py
+│   │   └── seed_data.py
+│   ├── shared/
+│   ├── static/
+│   ├── templates/
+│   └── uploads/
+├── config.py
+├── requirements.txt
+├── run.py
+├── seed.py
+└── .env.example
+```
 
 # 🔐 Configuração do Ambiente
 
-Clone o projeto:
-
-```bash
-git clone URL_DO_REPOSITORIO
-```
-
-Entre na pasta:
-
-```bash
-cd Sistema-X
-```
-
-Crie o ambiente virtual:
-
-Windows:
+Crie e ative o ambiente virtual:
 
 ```powershell
 python -m venv venv
-```
-
-Ative:
-
-```powershell
 .\venv\Scripts\activate
 ```
 
-Instale dependências:
+Instale as dependências:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
----
-
 # ⚙️ Configuração do Banco
 
-Copie:
+Copie o arquivo de exemplo:
 
 ```powershell
 copy .env.example .env
 ```
 
-Configure:
+Configure o `.env` com os dados do MySQL:
 
 ```env
 MYSQL_USER=root
-MYSQL_PASSWORD=senha
-
+MYSQL_PASSWORD=sua_senha
 MYSQL_HOST=localhost
 MYSQL_PORT=3306
-
-MYSQL_DATABASE=sistema_x
-
-SECRET_KEY=sua_chave
+MYSQL_DATABASE=sistema-x
+SECRET_KEY=sua_chave_secreta
 ```
 
-Ou:
+Também é possível informar a URL completa:
 
 ```env
-DATABASE_URL=mysql+pymysql://usuario:senha@localhost:3306/sistema_x
+DATABASE_URL=mysql+pymysql://usuario:senha@localhost:3306/sistema-x
 ```
 
----
+Ao iniciar a aplicação, o sistema cria o banco se ele não existir, cria as tabelas necessárias e aplica migrações simples para colunas novas.
+
+# 📎 Configuração de Uploads
+
+Por padrão, arquivos enviados ficam em:
+
+```text
+app/uploads/
+```
+
+É possível alterar o diretório com:
+
+```env
+UPLOAD_FOLDER=C:\caminho\para\uploads
+```
+
+O limite padrão de upload é 16 MB e pode ser alterado com:
+
+```env
+MAX_CONTENT_LENGTH=16777216
+```
+
+# ✉️ Configuração de E-mail
+
+Para habilitar envio direto de e-mails, configure:
+
+```env
+SMTP_HOST=smtp.exemplo.com
+SMTP_PORT=587
+SMTP_USER=usuario
+SMTP_PASSWORD=senha
+SMTP_FROM=sistema-x@exemplo.com
+```
+
+Sem SMTP configurado, a tela de resultado ainda pode abrir o cliente de e-mail do usuário com assunto e corpo preenchidos.
 
 # ▶️ Executando
 
-Inicie:
+Inicie a aplicação:
 
 ```powershell
 python run.py
@@ -256,100 +248,100 @@ Acesse:
 http://127.0.0.1:5000
 ```
 
-Ao iniciar:
-
-✅ Cria banco automaticamente  
-✅ Cria tabelas  
-✅ Sincroniza dados iniciais  
-✅ Configura ambiente do MVP
-
----
-
 # 🌱 Dados Iniciais
 
-Popular banco:
+Use o seed Python para popular o MySQL configurado no `.env`:
 
 ```powershell
 python seed.py
 ```
 
+O seed cria ou atualiza:
+
+- profissional demonstrativo;
+- sintomas;
+- pesos por sexo;
+- limiares de decisão;
+- pacientes demonstrativos;
+- familiares;
+- documentos anteriores.
+
 Usuário demonstrativo:
 
 ```text
-Email:
-contato@sxf.com
-
-Senha:
-123456
+E-mail: contato@sxf.com
+Senha: 123456
 ```
-
----
 
 # 🗄 Modelo de Dados
 
 Principais entidades:
 
-- profissional
-- paciente
-- sintoma
-- peso_sintoma
-- avaliacao
-- avaliacao_sintoma
-- limiar_decisao
+- `profissional`
+- `paciente`
+- `familiar_paciente`
+- `documento_paciente`
+- `sintoma`
+- `peso_sintoma`
+- `limiar_decisao`
+- `avaliacao`
+- `avaliacao_sintoma`
 
-Consultar:
+Consultas úteis:
 
 ```sql
 SELECT * FROM profissional;
 SELECT * FROM paciente;
+SELECT * FROM familiar_paciente;
+SELECT * FROM documento_paciente;
 SELECT * FROM avaliacao;
 SELECT * FROM sintoma;
 ```
 
----
-
 # 📈 Requisitos Não Funcionais
 
-O sistema deve:
+O Sistema-X trabalha com dados pessoais e dados sensíveis de saúde. Por isso, o projeto inclui registros de:
 
-- Executar cálculos em até **2 segundos**
-- Garantir confidencialidade dos dados
-- Possuir interface intuitiva
-- Permitir manutenção modular
-- Suportar backups periódicos
-- Possibilitar expansão futura
+- consentimento para tratamento de dados sensíveis;
+- autorização para comunicação por e-mail;
+- observações sobre finalidade e contexto do tratamento;
+- controle de acesso por login;
+- senhas com hash;
+- documentação da jornada do paciente.
 
----
+Em ambiente real, recomenda-se complementar a aplicação com políticas institucionais de retenção, backup, auditoria, revisão de acessos e descarte seguro de dados.
+
+# ✅ Validação Local
+
+Com o ambiente virtual ativo:
+
+```powershell
+python -m compileall app
+```
+
+Também é recomendado executar o seed e abrir as principais telas:
+
+- Dashboard.
+- Pacientes.
+- Cadastro de paciente.
+- Nova triagem.
+- Histórico.
+- Relatórios.
 
 # 🚀 Fluxo de Desenvolvimento
 
-Desenvolvimento ocorre em:
-
-```text
-develop
-```
-
-Fluxo:
+Fluxo sugerido:
 
 ```powershell
 git checkout develop
-
+git pull
+git checkout -b nome-da-branch
 git add .
-
-git commit -m "Descrição"
-
-git push origin develop
+git commit -m "Descrição da alteração"
+git push origin nome-da-branch
 ```
 
-Após concluir:
-
-Criar Pull Request:
-
-```text
-develop → main
-```
-
----
+Depois, abrir Pull Request para revisão.
 
 # 👥 Equipe
 
@@ -359,8 +351,6 @@ develop → main
 | Millena Gurczakovski | https://github.com/MillenaGur     |
 | Sérgio Calazans      | https://github.com/sergiocalazans |
 
----
-
 # 📄 Licença
 
-Projeto acadêmico desenvolvido para a disciplina **Experiência Criativa: Criando Soluções Computacionais** — PUCPR.
+Projeto acadêmico desenvolvido para a disciplina Experiência Criativa: Criando Soluções Computacionais, PUCPR.
