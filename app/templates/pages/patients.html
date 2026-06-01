@@ -19,7 +19,7 @@
         {% if patients %}
           <table class="table table-hover align-middle">
             <thead>
-              <tr><th>ID</th><th>Nome</th><th>CPF</th><th>E-mail</th><th>Telefone</th><th>Sexo</th><th>Idade</th><th>Último score</th><th></th></tr>
+              <tr><th>ID</th><th>Nome</th><th>CPF</th><th>E-mail</th><th>Telefone</th><th>Sexo</th><th>Idade</th><th>Etapa</th><th>Último score</th><th></th></tr>
             </thead>
             <tbody>
               {% for patient in patients %}
@@ -31,6 +31,7 @@
                   <td>{{ patient.phone }}</td>
                   <td>{{ patient.sex }}</td>
                   <td>{{ patient.age }}</td>
+                  <td>{{ patient.stage }}</td>
                   <td class="score">{{ patient.score }}</td>
                   <td><a class="btn btn-outline-secondary btn-sm" href="{{ url_for('patients.edit', patient_id=patient.id) }}">Editar</a></td>
                 </tr>

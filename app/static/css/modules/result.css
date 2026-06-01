@@ -1,5 +1,5 @@
 ﻿.result-card {
-  max-width: 680px;
+  max-width: 840px;
   margin: 0 auto;
   overflow: hidden;
   border-radius: var(--radius-lg);
@@ -135,4 +135,27 @@
   margin-bottom: 0;
   color: var(--text-secondary);
   font-size: .82rem;
+}
+
+.post-diagnosis-box {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.post-diagnosis-box label {
+  color: var(--text-muted);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.post-diagnosis-box p {
+  margin: .35rem 0 0;
+  color: var(--text-secondary);
 }

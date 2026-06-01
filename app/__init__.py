@@ -3,6 +3,8 @@ from flask import Flask
 from app.models import (
     Avaliacao,
     AvaliacaoSintoma,
+    DocumentoPaciente,
+    FamiliarPaciente,
     LimiarDecisao,
     Paciente,
     PesoSintoma,

@@ -15,7 +15,7 @@
       <div class="table-wrap table-responsive">
         {% if assessments %}
           <table class="table table-hover align-middle">
-            <thead><tr><th>ID</th><th>Paciente</th><th>Sexo</th><th>Score</th><th>Limiar</th><th>Resultado</th><th>Data</th></tr></thead>
+              <thead><tr><th>ID</th><th>Paciente</th><th>Sexo</th><th>Score</th><th>Limiar</th><th>Triagem</th><th>Exame</th><th>Tipo</th><th>Data</th></tr></thead>
             <tbody>
               {% for item in assessments %}
                 <tr>
@@ -25,6 +25,8 @@
                   <td class="score">{{ item.score }}</td>
                   <td class="score">{{ item.threshold }}</td>
                   <td><span class="badge rounded-pill {{ item.recommendation_key }}">{{ item.recommendation }}</span></td>
+                  <td>{{ item.exam_result }}</td>
+                  <td>{{ item.result_type or '-' }}</td>
                   <td>{{ item.date }}</td>
                 </tr>
               {% endfor %}

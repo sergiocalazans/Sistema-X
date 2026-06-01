@@ -35,5 +35,6 @@ def index():
             total_patients=total_patients,
             total_assessments=len(assessments),
             total_referrals=sum(1 for item in assessments if item.encaminhar),
+            positive_results=sum(1 for item in assessments if item.resultado_exame == "positivo"),
             recent_assessments=recent,
         )
