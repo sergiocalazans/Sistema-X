@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from enum import Enum
 
-from sqlalchemy import Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, String, Table, func, text
+from sqlalchemy import Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, String, Table, Text, func, text
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -55,6 +55,20 @@ class Paciente(Base):
     telefone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     data_nascimento: Mapped[date] = mapped_column(Date, nullable=False)
     sexo: Mapped[Sexo] = mapped_column(SQLEnum(Sexo, values_callable=enum_values, native_enum=True), nullable=False)
+    nome_social: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    endereco: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    origem_encaminhamento: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    requisicao_medica: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status_jornada: Mapped[str] = mapped_column(String(80), nullable=False, default="cadastro")
+    triagem_clinica: Mapped[str | None] = mapped_column(Text, nullable=True)
+    triagem_socioeconomica: Mapped[str | None] = mapped_column(Text, nullable=True)
+    caracteristicas_fisicas: Mapped[str | None] = mapped_column(Text, nullable=True)
+    foto_rosto: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    foto_perfil: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    foto_lado: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    consentimento_lgpd: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    consentimento_email: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    observacoes_lgpd: Mapped[str | None] = mapped_column(Text, nullable=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
     profissionais: Mapped[list[Profissional]] = relationship(
@@ -62,6 +76,8 @@ class Paciente(Base):
         back_populates="pacientes",
     )
     avaliacoes: Mapped[list[Avaliacao]] = relationship(back_populates="paciente", cascade="all, delete-orphan")
+    familiares: Mapped[list[FamiliarPaciente]] = relationship(back_populates="paciente", cascade="all, delete-orphan")
+    documentos: Mapped[list[DocumentoPaciente]] = relationship(back_populates="paciente", cascade="all, delete-orphan")
 
     @hybrid_property
     def idade(self) -> int:
@@ -119,6 +135,15 @@ class Avaliacao(Base):
     score_calculado: Mapped[float] = mapped_column(Float, nullable=False)
     encaminhar: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     observacao: Mapped[str | None] = mapped_column(String(500))
+    etapa_jornada: Mapped[str] = mapped_column(String(80), nullable=False, default="pre_avaliacao")
+    requisicao_medica: Mapped[str | None] = mapped_column(Text, nullable=True)
+    triagem_clinica: Mapped[str | None] = mapped_column(Text, nullable=True)
+    triagem_socioeconomica: Mapped[str | None] = mapped_column(Text, nullable=True)
+    encaminhamento_exame: Mapped[str | None] = mapped_column(Text, nullable=True)
+    resultado_exame: Mapped[str] = mapped_column(String(40), nullable=False, default="aguardando")
+    tipo_resultado: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    plano_pos_diagnostico: Mapped[str | None] = mapped_column(Text, nullable=True)
+    suporte_pos_diagnostico: Mapped[str | None] = mapped_column(Text, nullable=True)
     realizado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
     paciente: Mapped[Paciente] = relationship(back_populates="avaliacoes")
@@ -137,3 +162,34 @@ class AvaliacaoSintoma(Base):
 
     avaliacao: Mapped[Avaliacao] = relationship(back_populates="sintomas")
     sintoma: Mapped[Sintoma] = relationship(back_populates="avaliacoes_sintomas")
+
+
+class FamiliarPaciente(Base):
+    __tablename__ = "familiar_paciente"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    paciente_id: Mapped[int] = mapped_column(ForeignKey("paciente.id"), nullable=False)
+    nome: Mapped[str] = mapped_column(String(120), nullable=False)
+    parentesco: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    telefone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    email: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    momento_cadastro: Mapped[str] = mapped_column(String(30), nullable=False, default="pre_avaliacao")
+    observacao: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
+
+    paciente: Mapped[Paciente] = relationship(back_populates="familiares")
+
+
+class DocumentoPaciente(Base):
+    __tablename__ = "documento_paciente"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    paciente_id: Mapped[int] = mapped_column(ForeignKey("paciente.id"), nullable=False)
+    descricao: Mapped[str] = mapped_column(String(160), nullable=False)
+    tipo_documento: Mapped[str] = mapped_column(String(80), nullable=False, default="avaliacao_anterior")
+    origem: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    nome_arquivo: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    caminho_arquivo: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
+
+    paciente: Mapped[Paciente] = relationship(back_populates="documentos")

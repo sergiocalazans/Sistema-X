@@ -3,7 +3,7 @@
 {% block content %}
   <div class="page-header">
     <div class="page-title">Resultado da Triagem</div>
-    <div class="page-subtitle">Score calculado e recomendação automática</div>
+    <div class="page-subtitle">Score, exame, documento da jornada e suporte pós-diagnóstico</div>
   </div>
 
   <div class="page-body">
@@ -22,6 +22,20 @@
             <label>Limiar</label>
             <div class="value score-val">{{ assessment.threshold }}</div>
           </div>
+          <div class="result-field">
+            <label>Etapa</label>
+            <div class="value">{{ assessment.journey_stage }}</div>
+          </div>
+          <div class="result-field">
+            <label>Resultado do exame</label>
+            <div class="value">{{ assessment.exam_result }}</div>
+          </div>
+          {% if assessment.result_type %}
+            <div class="result-field">
+              <label>Tipo</label>
+              <div class="value">{{ assessment.result_type }}</div>
+            </div>
+          {% endif %}
         </div>
         <div class="score-bar-wrap">
           <div class="score-bar-track"><div class="score-bar-fill" style="width: {{ bar_width }}%"></div></div>
@@ -34,12 +48,34 @@
             <p>O resultado foi salvo no histórico do paciente.</p>
           </div>
         </div>
+        {% if assessment.post_diagnosis_plan or assessment.post_diagnosis_support %}
+          <div class="post-diagnosis-box">
+            {% if assessment.post_diagnosis_plan %}
+              <div>
+                <label>Plano pós-diagnóstico</label>
+                <p>{{ assessment.post_diagnosis_plan }}</p>
+              </div>
+            {% endif %}
+            {% if assessment.post_diagnosis_support %}
+              <div>
+                <label>Suporte pós-diagnóstico</label>
+                <p>{{ assessment.post_diagnosis_support }}</p>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
         <div class="result-actions">
           <a class="btn btn-primary" href="{{ url_for('assessments.create') }}">Nova triagem</a>
           <a class="btn btn-outline-secondary" href="{{ url_for('assessments.index') }}">Ver histórico</a>
+          <a class="btn btn-outline-secondary" href="{{ url_for('assessments.document', assessment_id=assessment.id) }}">Gerar documento</a>
+          {% if mailto_link %}
+            <form action="{{ url_for('assessments.send_email', assessment_id=assessment.id) }}" method="post">
+              <button class="btn btn-outline-secondary" type="submit">Enviar e-mail</button>
+            </form>
+            <a class="btn btn-outline-secondary" href="{{ mailto_link }}">Abrir e-mail</a>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 {% endblock %}
-

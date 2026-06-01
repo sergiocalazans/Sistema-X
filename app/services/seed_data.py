@@ -5,7 +5,7 @@ from datetime import date
 from werkzeug.security import generate_password_hash
 
 from app.database import SessionLocal
-from app.models import LimiarDecisao, Paciente, PesoSintoma, Profissional, Sexo, Sintoma
+from app.models import DocumentoPaciente, FamiliarPaciente, LimiarDecisao, Paciente, PesoSintoma, Profissional, Sexo, Sintoma
 
 
 SINTOMAS_MVP = [
@@ -29,9 +29,54 @@ SINTOMA_ALIASES = {
 }
 
 PACIENTES_DEMO = [
-    ("Ana Silva Santos", Sexo.FEMININO, date(2018, 5, 1)),
-    ("Pedro Oliveira Costa", Sexo.MASCULINO, date(2014, 4, 30)),
-    ("Maria Souza Lima", Sexo.FEMININO, date(2020, 4, 29)),
+    {
+        "nome": "Ana Silva Santos",
+        "sexo": Sexo.FEMININO,
+        "nascimento": date(2018, 5, 1),
+        "email": "familia.ana@example.com",
+        "telefone": "(11) 90000-0001",
+        "status_jornada": "triagem",
+        "origem_encaminhamento": "Pediatria",
+        "requisicao_medica": "Requisição para investigação molecular de SXF após atraso de fala e dificuldades escolares.",
+        "triagem_clinica": "Atraso de linguagem, dificuldade de atenção e contato visual reduzido.",
+        "triagem_socioeconomica": "Família com disponibilidade para comparecimento em dias úteis e necessidade de orientação sobre rede de apoio.",
+        "caracteristicas_fisicas": "Face alongada discreta e orelhas proeminentes.",
+        "familiares": [("Carla Silva", "Mãe", "(11) 98888-0001", "carla.silva@example.com", "pre_avaliacao")],
+        "documentos": [("Relatório escolar anterior", "avaliacao_anterior", "Escola municipal")],
+    },
+    {
+        "nome": "Pedro Oliveira Costa",
+        "sexo": Sexo.MASCULINO,
+        "nascimento": date(2014, 4, 30),
+        "email": "familia.pedro@example.com",
+        "telefone": "(11) 90000-0002",
+        "status_jornada": "exame",
+        "origem_encaminhamento": "Neuropediatria",
+        "requisicao_medica": "Solicitação de teste genético confirmatório para SXF.",
+        "triagem_clinica": "Deficiência intelectual, hiperatividade e movimentos repetitivos.",
+        "triagem_socioeconomica": "Responsável relata dificuldade de deslocamento e necessidade de agendamento assistido.",
+        "caracteristicas_fisicas": "Orelhas proeminentes, face alongada e macroorquidismo relatado.",
+        "familiares": [
+            ("Marcos Costa", "Pai", "(11) 97777-0002", "marcos.costa@example.com", "pre_avaliacao"),
+            ("Juliana Oliveira", "Mãe", "(11) 96666-0002", "juliana.oliveira@example.com", "pos_avaliacao"),
+        ],
+        "documentos": [("Avaliação neuropsicológica", "avaliacao_anterior", "Clínica externa")],
+    },
+    {
+        "nome": "Maria Souza Lima",
+        "sexo": Sexo.FEMININO,
+        "nascimento": date(2020, 4, 29),
+        "email": "familia.maria@example.com",
+        "telefone": "(11) 90000-0003",
+        "status_jornada": "cadastro",
+        "origem_encaminhamento": "Atenção básica",
+        "requisicao_medica": "Investigação inicial por histórico familiar e atraso de desenvolvimento.",
+        "triagem_clinica": "Atraso global leve e dificuldade de interação social.",
+        "triagem_socioeconomica": "Família solicita orientações sobre possibilidades diagnósticas e grupos de apoio.",
+        "caracteristicas_fisicas": "Sem alterações físicas relevantes registradas na visita inicial.",
+        "familiares": [("Renata Lima", "Mãe", "(11) 95555-0003", "renata.lima@example.com", "pre_avaliacao")],
+        "documentos": [("Encaminhamento UBS", "requisicao_medica", "Unidade básica de saúde")],
+    },
 ]
 
 
@@ -87,24 +132,61 @@ def sync_sintomas(db):
 
 
 def sync_pacientes_demo(db, profissional):
-    for nome, sexo, nascimento in PACIENTES_DEMO:
+    for demo in PACIENTES_DEMO:
         paciente = (
             db.query(Paciente)
             .join(Paciente.profissionais)
-            .filter(Paciente.nome == nome, Profissional.id == profissional.id)
+            .filter(Paciente.nome == demo["nome"], Profissional.id == profissional.id)
             .first()
         )
         if paciente:
-            paciente.data_nascimento = nascimento
-            paciente.sexo = sexo
+            paciente.data_nascimento = demo["nascimento"]
+            paciente.sexo = demo["sexo"]
         else:
             paciente = Paciente(
-                nome=nome,
-                data_nascimento=nascimento,
-                sexo=sexo,
+                nome=demo["nome"],
+                data_nascimento=demo["nascimento"],
+                sexo=demo["sexo"],
             )
             paciente.profissionais.append(profissional)
             db.add(paciente)
+            db.flush()
+
+        paciente.email = demo["email"]
+        paciente.telefone = demo["telefone"]
+        paciente.status_jornada = demo["status_jornada"]
+        paciente.origem_encaminhamento = demo["origem_encaminhamento"]
+        paciente.requisicao_medica = demo["requisicao_medica"]
+        paciente.triagem_clinica = demo["triagem_clinica"]
+        paciente.triagem_socioeconomica = demo["triagem_socioeconomica"]
+        paciente.caracteristicas_fisicas = demo["caracteristicas_fisicas"]
+        paciente.consentimento_lgpd = True
+        paciente.consentimento_email = True
+        paciente.observacoes_lgpd = "Dados sensíveis registrados para finalidade assistencial e extensionista do Sistema-X."
+        _sync_demo_relatives(paciente, demo["familiares"])
+        _sync_demo_documents(paciente, demo["documentos"])
+
+
+def _sync_demo_relatives(paciente, familiares):
+    paciente.familiares.clear()
+    for nome, parentesco, telefone, email, momento in familiares:
+        paciente.familiares.append(FamiliarPaciente(
+            nome=nome,
+            parentesco=parentesco,
+            telefone=telefone,
+            email=email,
+            momento_cadastro=momento,
+        ))
+
+
+def _sync_demo_documents(paciente, documentos):
+    paciente.documentos.clear()
+    for descricao, tipo, origem in documentos:
+        paciente.documentos.append(DocumentoPaciente(
+            descricao=descricao,
+            tipo_documento=tipo,
+            origem=origem,
+        ))
 
 
 def sync_mvp_defaults(include_demo_patients=False):

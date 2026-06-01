@@ -4,17 +4,21 @@
   <div class="page-header">
     <a class="back-link" href="{{ url_for('patients.index') }}">Voltar para pacientes</a>
     <div class="page-title">{{ "Editar Paciente" if patient else "Cadastrar Paciente" }}</div>
-    <div class="page-subtitle">Dados cadastrais e de contato do paciente</div>
+    <div class="page-subtitle">Cadastro, familiares, fotos, documentos e consentimentos da jornada IBK</div>
   </div>
 
   <div class="page-body">
     <div class="form-section card patient-form-section">
-      <div class="form-section-title">Dados do paciente</div>
-      <form method="post">
+      <form method="post" enctype="multipart/form-data">
+        <div class="form-section-title">Dados do paciente</div>
         <div class="form-grid patient-form-grid">
           <div class="form-group">
             <label class="form-label">Nome</label>
             <input name="nome" class="form-input form-control" value="{{ patient.nome if patient else '' }}" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nome social</label>
+            <input name="nome_social" class="form-input form-control" value="{{ patient.nome_social if patient and patient.nome_social else '' }}" />
           </div>
           <div class="form-group">
             <label class="form-label">CPF</label>
@@ -39,7 +43,152 @@
               <option value="masculino" {{ 'selected' if patient and patient.sexo.value == 'masculino' }}>Masculino</option>
             </select>
           </div>
+          <div class="form-group form-grid-wide">
+            <label class="form-label">Endereço</label>
+            <input name="endereco" class="form-input form-control" value="{{ patient.endereco if patient and patient.endereco else '' }}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Origem do encaminhamento</label>
+            <input name="origem_encaminhamento" class="form-input form-control" value="{{ patient.origem_encaminhamento if patient and patient.origem_encaminhamento else '' }}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Etapa da jornada</label>
+            <select name="status_jornada" class="form-input form-select">
+              {% set stage = patient.status_jornada if patient else 'cadastro' %}
+              <option value="cadastro" {{ 'selected' if stage == 'cadastro' }}>Cadastro</option>
+              <option value="recepcao_tecnica" {{ 'selected' if stage == 'recepcao_tecnica' }}>Recepção técnica</option>
+              <option value="requisicao_medica" {{ 'selected' if stage == 'requisicao_medica' }}>Avaliação da requisição médica</option>
+              <option value="triagem" {{ 'selected' if stage == 'triagem' }}>Triagem clínica e socioeconômica</option>
+              <option value="exame" {{ 'selected' if stage == 'exame' }}>Encaminhado para exame</option>
+              <option value="resultado" {{ 'selected' if stage == 'resultado' }}>Recebimento do resultado</option>
+              <option value="pos_diagnostico" {{ 'selected' if stage == 'pos_diagnostico' }}>Suporte pós-diagnóstico</option>
+            </select>
+          </div>
         </div>
+
+        <div class="form-section-title">Pré-avaliação e características</div>
+        <div class="form-grid patient-form-grid">
+          <div class="form-group form-grid-wide">
+            <label class="form-label">Avaliação da requisição médica</label>
+            <textarea name="requisicao_medica" class="form-input form-control" rows="3">{{ patient.requisicao_medica if patient and patient.requisicao_medica else '' }}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Triagem clínica</label>
+            <textarea name="triagem_clinica" class="form-input form-control" rows="4">{{ patient.triagem_clinica if patient and patient.triagem_clinica else '' }}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Triagem socioeconômica</label>
+            <textarea name="triagem_socioeconomica" class="form-input form-control" rows="4">{{ patient.triagem_socioeconomica if patient and patient.triagem_socioeconomica else '' }}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Características físicas</label>
+            <textarea name="caracteristicas_fisicas" class="form-input form-control" rows="4">{{ patient.caracteristicas_fisicas if patient and patient.caracteristicas_fisicas else '' }}</textarea>
+          </div>
+        </div>
+
+        <div class="form-section-title">Fotos obrigatórias</div>
+        <div class="form-grid patient-form-grid">
+          {% for field, label in [('foto_rosto', 'Rosto'), ('foto_perfil', 'Perfil'), ('foto_lado', 'Lado')] %}
+            <div class="form-group">
+              <label class="form-label">Foto - {{ label }}</label>
+              <input name="{{ field }}" class="form-input form-control" type="file" accept="image/*" />
+              {% set photo = patient|attr(field) if patient else none %}
+              {% if photo %}
+                <a class="file-link" href="{{ url_for('patients.patient_file', patient_id=patient.id, filename=photo) }}" target="_blank">Ver foto cadastrada</a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="form-section-title">Familiares</div>
+        {% set relatives = patient.familiares if patient and patient.familiares else [] %}
+        {% for index in range([relatives|length, 3]|max) %}
+          {% set relative = relatives[index] if index < relatives|length else none %}
+          <div class="family-row">
+            <div class="form-group">
+              <label class="form-label">Nome</label>
+              <input name="familiar_nome" class="form-input form-control" value="{{ relative.nome if relative else '' }}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Parentesco</label>
+              <input name="familiar_parentesco" class="form-input form-control" value="{{ relative.parentesco if relative and relative.parentesco else '' }}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Telefone</label>
+              <input name="familiar_telefone" class="form-input form-control" value="{{ relative.telefone if relative and relative.telefone else '' }}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">E-mail</label>
+              <input name="familiar_email" type="email" class="form-input form-control" value="{{ relative.email if relative and relative.email else '' }}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Momento</label>
+              {% set moment = relative.momento_cadastro if relative else 'pre_avaliacao' %}
+              <select name="familiar_momento" class="form-input form-select">
+                <option value="pre_avaliacao" {{ 'selected' if moment == 'pre_avaliacao' }}>Antes da avaliação</option>
+                <option value="pos_avaliacao" {{ 'selected' if moment == 'pos_avaliacao' }}>Pós-avaliação</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Observação</label>
+              <input name="familiar_observacao" class="form-input form-control" value="{{ relative.observacao if relative and relative.observacao else '' }}" />
+            </div>
+          </div>
+        {% endfor %}
+
+        <div class="form-section-title">Documentos anteriores</div>
+        {% if patient and patient.documentos %}
+          <div class="document-list">
+            {% for document in patient.documentos %}
+              <div class="document-item">
+                <span>{{ document.descricao }} - {{ document.tipo_documento.replace('_', ' ') }}</span>
+                {% if document.caminho_arquivo %}
+                  <a href="{{ url_for('patients.patient_file', patient_id=patient.id, filename=document.caminho_arquivo) }}" target="_blank">Abrir arquivo</a>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div class="family-row">
+          <div class="form-group">
+            <label class="form-label">Descrição</label>
+            <input name="documento_descricao" class="form-input form-control" placeholder="Ex.: Avaliação neuropsicológica" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo</label>
+            <select name="documento_tipo" class="form-input form-select">
+              <option value="avaliacao_anterior">Avaliação anterior</option>
+              <option value="requisicao_medica">Requisição médica</option>
+              <option value="resultado_exame">Resultado de exame</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Origem</label>
+            <input name="documento_origem" class="form-input form-control" placeholder="Instituição ou profissional" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Arquivo</label>
+            <input name="documento_arquivo" class="form-input form-control" type="file" />
+          </div>
+        </div>
+
+        <div class="form-section-title">LGPD e comunicação</div>
+        <div class="consent-grid">
+          <label class="consent-item">
+            <input type="checkbox" name="consentimento_lgpd" {{ 'checked' if patient and patient.consentimento_lgpd }}>
+            <span>Consentimento para tratamento de dados sensíveis registrado</span>
+          </label>
+          <label class="consent-item">
+            <input type="checkbox" name="consentimento_email" {{ 'checked' if patient and patient.consentimento_email }}>
+            <span>Autorização para envio de e-mails ao paciente/família</span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observações LGPD</label>
+          <textarea name="observacoes_lgpd" class="form-input form-control" rows="3">{{ patient.observacoes_lgpd if patient and patient.observacoes_lgpd else '' }}</textarea>
+        </div>
+
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><span data-icon="plus"></span>Salvar paciente</button>
           <a class="btn btn-outline-secondary" href="{{ url_for('patients.index') }}">Cancelar</a>

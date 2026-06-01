@@ -65,6 +65,34 @@ def migrate_patient_schema() -> None:
             connection.execute(text(_add_column_sql(dialect, "paciente", "email", "VARCHAR(120) NULL")))
         if "telefone" not in columns:
             connection.execute(text(_add_column_sql(dialect, "paciente", "telefone", "VARCHAR(20) NULL")))
+        if "nome_social" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "nome_social", "VARCHAR(120) NULL")))
+        if "endereco" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "endereco", "VARCHAR(255) NULL")))
+        if "origem_encaminhamento" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "origem_encaminhamento", "VARCHAR(160) NULL")))
+        if "requisicao_medica" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "requisicao_medica", _text_sql(dialect, nullable=True))))
+        if "status_jornada" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "status_jornada", "VARCHAR(80) NOT NULL DEFAULT 'cadastro'")))
+        if "triagem_clinica" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "triagem_clinica", _text_sql(dialect, nullable=True))))
+        if "triagem_socioeconomica" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "triagem_socioeconomica", _text_sql(dialect, nullable=True))))
+        if "caracteristicas_fisicas" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "caracteristicas_fisicas", _text_sql(dialect, nullable=True))))
+        if "foto_rosto" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "foto_rosto", "VARCHAR(255) NULL")))
+        if "foto_perfil" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "foto_perfil", "VARCHAR(255) NULL")))
+        if "foto_lado" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "foto_lado", "VARCHAR(255) NULL")))
+        if "consentimento_lgpd" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "consentimento_lgpd", _boolean_sql(dialect, default=False))))
+        if "consentimento_email" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "consentimento_email", _boolean_sql(dialect, default=False))))
+        if "observacoes_lgpd" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "paciente", "observacoes_lgpd", _text_sql(dialect, nullable=True))))
         if "profissional_id" in columns:
             connection.execute(text(_nullable_column_sql(dialect, "paciente", "profissional_id", "INT NULL")))
 
@@ -84,6 +112,37 @@ def migrate_patient_schema() -> None:
                     WHERE profissional_id IS NOT NULL
                 """))
 
+    migrate_assessment_schema()
+
+
+def migrate_assessment_schema() -> None:
+    inspector = inspect(engine)
+    if "avaliacao" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("avaliacao")}
+    dialect = engine.dialect.name
+
+    with engine.begin() as connection:
+        if "etapa_jornada" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "etapa_jornada", "VARCHAR(80) NOT NULL DEFAULT 'pre_avaliacao'")))
+        if "requisicao_medica" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "requisicao_medica", _text_sql(dialect, nullable=True))))
+        if "triagem_clinica" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "triagem_clinica", _text_sql(dialect, nullable=True))))
+        if "triagem_socioeconomica" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "triagem_socioeconomica", _text_sql(dialect, nullable=True))))
+        if "encaminhamento_exame" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "encaminhamento_exame", _text_sql(dialect, nullable=True))))
+        if "resultado_exame" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "resultado_exame", "VARCHAR(40) NOT NULL DEFAULT 'aguardando'")))
+        if "tipo_resultado" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "tipo_resultado", "VARCHAR(40) NULL")))
+        if "plano_pos_diagnostico" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "plano_pos_diagnostico", _text_sql(dialect, nullable=True))))
+        if "suporte_pos_diagnostico" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "avaliacao", "suporte_pos_diagnostico", _text_sql(dialect, nullable=True))))
+
 
 def _add_column_sql(dialect: str, table: str, column: str, definition: str) -> str:
     if dialect == "sqlite":
@@ -95,6 +154,18 @@ def _nullable_column_sql(dialect: str, table: str, column: str, definition: str)
     if dialect == "sqlite":
         return "SELECT 1"
     return f"ALTER TABLE `{table}` MODIFY COLUMN `{column}` {definition}"
+
+
+def _text_sql(dialect: str, nullable: bool = True) -> str:
+    null_sql = "NULL" if nullable else "NOT NULL"
+    return f"TEXT {null_sql}"
+
+
+def _boolean_sql(dialect: str, default: bool = False) -> str:
+    value = "1" if default else "0"
+    if dialect == "sqlite":
+        return f"BOOLEAN NOT NULL DEFAULT {value}"
+    return f"BOOLEAN NOT NULL DEFAULT {value}"
 
 def get_session():
     session = SessionLocal()

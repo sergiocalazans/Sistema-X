@@ -79,3 +79,7 @@
 .observation-field {
   margin-top: 1.375rem;
 }
+
+.journey-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
