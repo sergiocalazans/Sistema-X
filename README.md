@@ -242,19 +242,21 @@ python seed.py
 
 O seed cria ou atualiza:
 
-- profissional demonstrativo;
+- usuários demonstrativos por perfil;
 - sintomas;
 - pesos por sexo;
 - limiares de decisão;
 - pacientes demonstrativos;
+- avaliações e encaminhamentos demonstrativos;
 - familiares;
 - documentos anteriores.
 
-Usuário demonstrativo:
+Usuários demonstrativos:
 
 ```text
-E-mail: contato@sxf.com
-Senha: 123456
+Administrador: contato@sxf.com / 123456
+Profissional: triagem@sxf.com / 123456
+Visualizador: relatorios@sxf.com / 123456
 ```
 
 # 🗄 Modelo de Dados

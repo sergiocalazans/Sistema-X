@@ -17,11 +17,11 @@ def run_seed():
         result = sync_mvp_defaults(include_demo_patients=True)
 
         if result["profissional_created"]:
-            print("Profissional demo criado.")
+            print("Usuários demonstrativos criados.")
         else:
-            print("Profissional demo encontrado. Atualizando credenciais.")
+            print("Usuários demonstrativos encontrados. Atualizando credenciais.")
 
-        print("--- Sucesso: banco sincronizado com dados iniciais do MVP. ---")
+        print("--- Sucesso: banco sincronizado com usuários, pacientes, avaliações e encaminhamentos. ---")
 
 
 if __name__ == "__main__":
