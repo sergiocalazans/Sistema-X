@@ -128,6 +128,7 @@ def _analyses(assessments, symptoms):
             "description": "Cadastre avaliações para gerar análises automáticas.",
         }]
 
+    # Os cards abaixo sintetizam padrões relevantes para apoiar a decisão clínica e a apresentação dos dados.
     return [
         _highest_referral_age_group(assessments),
         _symptoms_per_assessment(assessments, symptoms),
@@ -415,6 +416,7 @@ def _score_trend_chart(assessments):
     if assessments.empty:
         return _empty_figure("Sem tendência de score")
 
+    # Compara score médio e taxa de encaminhamento no mesmo eixo para destacar meses fora do padrão.
     monthly = (
         assessments
         .groupby("month")

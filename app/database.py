@@ -47,6 +47,7 @@ def init_db() -> None:
 
     create_database_if_not_exists()
     Base.metadata.create_all(bind=engine)
+    # Mantém bancos já criados compatíveis com colunas adicionadas durante a evolução do projeto.
     migrate_professional_schema()
     migrate_patient_schema()
 

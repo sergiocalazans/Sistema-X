@@ -391,6 +391,7 @@ def _sync_demo_assessment(db, paciente, profissional, demo, sintomas):
         peso.sintoma_id: peso.peso
         for peso in db.query(PesoSintoma).filter_by(sexo_referencia=paciente.sexo).all()
     }
+    # Usa a mesma regra da triagem para que os relatórios de demonstração reflitam o comportamento real do sistema.
     score = sum(pesos.get(sintoma.id, 0) for sintoma in selected_symptoms)
     avaliacao = (
         db.query(Avaliacao)

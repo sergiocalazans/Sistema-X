@@ -44,6 +44,7 @@ def role_required(*roles):
             if not current_professional_id():
                 flash("Faça login para continuar.", "error")
                 return redirect(url_for("auth.login"))
+            # A autorização fica centralizada para manter as regras de perfil iguais em todas as rotas.
             if current_user_role() not in roles:
                 flash("Seu tipo de usuário não tem acesso a esta área.", "error")
                 return redirect(url_for("dashboard.index"))
