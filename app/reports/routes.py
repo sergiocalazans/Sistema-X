@@ -17,6 +17,7 @@ def index():
             "pages/reports.html",
             active_page="reports",
             indicators=reports["indicators"],
+            analyses=reports["analyses"],
             tables=reports["tables"],
             charts=reports["charts"],
         )

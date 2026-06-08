@@ -32,6 +32,10 @@
   }
 
   .reports-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .analysis-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -43,6 +47,7 @@
 @media (max-width: 900px) {
   .stats-grid,
   .reports-kpi-grid,
+  .analysis-grid,
   .reports-grid,
   .reports-table-grid,
   .settings-grid,
@@ -134,6 +139,15 @@
   }
 
   .result-actions .btn {
+    width: 100%;
+  }
+
+  .reports-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .report-actions .btn {
     width: 100%;
   }
 

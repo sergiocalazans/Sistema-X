@@ -91,6 +91,10 @@ function renderCharts() {
     "chart-score-sex": window.SXF_CHARTS.scoreBySex,
     "chart-monthly": window.SXF_CHARTS.assessmentsByMonth,
     "chart-symptoms": window.SXF_CHARTS.topSymptoms,
+    "chart-age-distribution": window.SXF_CHARTS.ageDistribution,
+    "chart-referrals-age": window.SXF_CHARTS.referralsByAge,
+    "chart-exam-results": window.SXF_CHARTS.examResults,
+    "chart-score-trend": window.SXF_CHARTS.scoreTrend,
   };
 
   Object.entries(map).forEach(([id, figure]) => {
