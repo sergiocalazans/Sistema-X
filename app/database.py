@@ -43,7 +43,7 @@ def create_database_if_not_exists() -> None:
 
 
 def init_db() -> None:
-    import app 
+    from app import models  # noqa: F401
 
     create_database_if_not_exists()
     Base.metadata.create_all(bind=engine)
