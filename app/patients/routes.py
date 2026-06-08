@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 
 from app.models import DocumentoPaciente, FamiliarPaciente, Paciente, Profissional, Sexo
 from app.services.exports import patients_workbook
-from app.shared.auth import current_professional_id, login_required
+from app.shared.auth import ROLE_ADMIN, ROLE_PROFESSIONAL, current_professional_id, role_required
 from app.shared.db import db_session
 from app.shared.formatters import patient_last_assessment, patient_last_score, recommendation_key, sex_label
 from app.shared.patients import professional_patient_query
@@ -16,7 +16,7 @@ patients_bp = Blueprint("patients", __name__, url_prefix="/pacientes")
 
 
 @patients_bp.get("")
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def index():
     profissional_id = current_professional_id()
     with db_session() as db:
@@ -45,7 +45,7 @@ def index():
 
 
 @patients_bp.route("/novo", methods=["GET", "POST"])
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def create():
     if request.method == "POST":
         return save_patient()
@@ -53,7 +53,7 @@ def create():
 
 
 @patients_bp.route("/<int:patient_id>/editar", methods=["GET", "POST"])
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def edit(patient_id):
     profissional_id = current_professional_id()
     with db_session() as db:
@@ -69,7 +69,7 @@ def edit(patient_id):
 
 
 @patients_bp.get("/export")
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def export():
     profissional_id = current_professional_id()
     with db_session() as db:
@@ -83,7 +83,7 @@ def export():
 
 
 @patients_bp.get("/<int:patient_id>/arquivo/<path:filename>")
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def patient_file(patient_id, filename):
     profissional_id = current_professional_id()
     with db_session() as db:
@@ -96,6 +96,9 @@ def patient_file(patient_id, filename):
     requested = (directory / filename).resolve()
     if directory not in requested.parents and requested != directory:
         flash("Arquivo inválido.", "error")
+        return redirect(url_for("patients.edit", patient_id=patient_id))
+    if not requested.is_file():
+        flash("Arquivo não encontrado.", "error")
         return redirect(url_for("patients.edit", patient_id=patient_id))
     return send_file(requested)
 
@@ -139,7 +142,6 @@ def save_patient(patient_id=None):
         paciente.triagem_socioeconomica = optional(request.form.get("triagem_socioeconomica"))
         paciente.caracteristicas_fisicas = optional(request.form.get("caracteristicas_fisicas"))
         paciente.consentimento_lgpd = request.form.get("consentimento_lgpd") == "on"
-        paciente.consentimento_email = request.form.get("consentimento_email") == "on"
         paciente.observacoes_lgpd = optional(request.form.get("observacoes_lgpd"))
 
         if not patient_id:

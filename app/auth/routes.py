@@ -18,6 +18,7 @@ def login():
             profissional = db.query(Profissional).filter(func.lower(Profissional.email) == email).first()
             if profissional and check_password_hash(profissional.senha_hash, senha):
                 session["profissional_id"] = profissional.id
+                session["tipo_usuario"] = profissional.tipo_usuario
                 return redirect(url_for("dashboard.index"))
 
         flash("E-mail ou senha inválidos.", "error")
@@ -28,13 +29,13 @@ def login():
 @auth_bp.route("/cadastro", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        nome = (request.form.get("nome") or "Profissional").strip()
-        especialidade = (request.form.get("especialidade") or "Saúde").strip()
+        nome = (request.form.get("nome") or "").strip()
+        especialidade = (request.form.get("especialidade") or "").strip()
         email = (request.form.get("email") or "").strip().lower()
         senha = request.form.get("senha") or ""
 
-        if not email or not senha:
-            flash("Informe e-mail e senha.", "error")
+        if not nome or not especialidade or not email or not senha:
+            flash("Informe nome, especialidade, e-mail e senha.", "error")
             return render_template("pages/login.html", mode="register")
         if len(senha) < 6:
             flash("A senha deve ter pelo menos 6 caracteres.", "error")
@@ -51,11 +52,13 @@ def register():
                 email=email,
                 senha_hash=generate_password_hash(senha),
                 especialidade=especialidade,
+                tipo_usuario="profissional",
             )
             db.add(profissional)
             db.commit()
             db.refresh(profissional)
             session["profissional_id"] = profissional.id
+            session["tipo_usuario"] = profissional.tipo_usuario
 
         return redirect(url_for("dashboard.index"))
 

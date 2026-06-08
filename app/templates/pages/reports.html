@@ -1,9 +1,17 @@
 {% extends "app.html" %}
 
 {% block content %}
-  <div class="page-header">
-    <div class="page-title">Relatórios</div>
-    <div class="page-subtitle">Indicadores e análises da triagem SXF</div>
+  <div class="page-header reports-header">
+    <div>
+      <div class="page-title">Relatórios</div>
+      <div class="page-subtitle">Indicadores e análises da triagem SXF</div>
+    </div>
+    <div class="report-actions">
+      <button class="btn btn-outline-secondary" type="button" data-print-report>
+        <span data-icon="print"></span>
+        Imprimir PDF
+      </button>
+    </div>
   </div>
 
   <div class="page-body">
@@ -12,6 +20,18 @@
       <div class="stat-card card"><div class="stat-icon orange" data-icon="arrow"></div><div class="stat-label">Taxa de Encaminhamento</div><div class="stat-value">{{ indicators.referralRate }}%</div></div>
       <div class="stat-card card"><div class="stat-icon green" data-icon="barChart"></div><div class="stat-label">Score Médio</div><div class="stat-value">{{ indicators.averageScore }}</div></div>
       <div class="stat-card card"><div class="stat-icon purple" data-icon="users"></div><div class="stat-label">Sintoma Mais Frequente</div><div class="stat-value compact">{{ indicators.mostFrequentSymptom }}</div></div>
+      <div class="stat-card card"><div class="stat-icon blue" data-icon="chart"></div><div class="stat-label">Idade Média</div><div class="stat-value">{{ indicators.averageAge }}</div></div>
+      <div class="stat-card card"><div class="stat-icon green" data-icon="check"></div><div class="stat-label">Resultados Positivos</div><div class="stat-value">{{ indicators.positiveResults }}</div></div>
+    </div>
+
+    <div class="analysis-grid">
+      {% for item in analyses %}
+        <div class="analysis-card card">
+          <div class="analysis-title">{{ item.title }}</div>
+          <div class="analysis-value">{{ item.value }}</div>
+          <div class="analysis-description">{{ item.description }}</div>
+        </div>
+      {% endfor %}
     </div>
 
     <div class="reports-grid">
@@ -19,6 +39,10 @@
       <div class="report-card card"><div class="report-card-header"><div class="report-title">Score por Sexo</div><div class="report-subtitle">Dispersão e mediana dos scores</div></div><div class="plot-container" id="chart-score-sex"></div></div>
       <div class="report-card card"><div class="report-card-header"><div class="report-title">Avaliações por Mês</div><div class="report-subtitle">Volume de triagens ao longo do tempo</div></div><div class="plot-container" id="chart-monthly"></div></div>
       <div class="report-card card"><div class="report-card-header"><div class="report-title">Sintomas Mais Frequentes</div><div class="report-subtitle">Ocorrências marcadas nos checklists</div></div><div class="plot-container" id="chart-symptoms"></div></div>
+      <div class="report-card card"><div class="report-card-header"><div class="report-title">Distribuição por Idade</div><div class="report-subtitle">Concentração etária dos pacientes avaliados</div></div><div class="plot-container" id="chart-age-distribution"></div></div>
+      <div class="report-card card"><div class="report-card-header"><div class="report-title">Encaminhamentos por Faixa Etária</div><div class="report-subtitle">Comparativo de recomendação por idade</div></div><div class="plot-container" id="chart-referrals-age"></div></div>
+      <div class="report-card card"><div class="report-card-header"><div class="report-title">Resultados de Exame</div><div class="report-subtitle">Status dos resultados registrados na jornada</div></div><div class="plot-container" id="chart-exam-results"></div></div>
+      <div class="report-card card"><div class="report-card-header"><div class="report-title">Tendência de Score</div><div class="report-subtitle">Score médio e taxa de encaminhamento por mês</div></div><div class="plot-container" id="chart-score-trend"></div></div>
     </div>
 
     <div class="reports-table-grid">
@@ -36,6 +60,24 @@
             </table>
           {% else %}
             <div class="empty-state"><p>Sem avaliações para agrupar por sexo.</p></div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="table-card card">
+        <div class="table-header"><span class="table-title">Indicadores por faixa etária</span></div>
+        <div class="table-wrap table-responsive">
+          {% if tables.byAgeGroup %}
+            <table class="table table-hover align-middle">
+              <thead><tr><th>Faixa</th><th>Total</th><th>Encaminhamentos</th><th>Taxa</th><th>Score médio</th><th>Positivos</th></tr></thead>
+              <tbody>
+                {% for row in tables.byAgeGroup %}
+                  <tr><td class="name">{{ row.ageGroup }}</td><td>{{ row.total }}</td><td>{{ row.referrals }}</td><td>{{ row.referralRate }}%</td><td class="score">{{ row.averageScore }}</td><td>{{ row.positiveResults }}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <div class="empty-state"><p>Sem avaliações para agrupar por faixa etária.</p></div>
           {% endif %}
         </div>
       </div>

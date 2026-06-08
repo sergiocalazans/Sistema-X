@@ -32,17 +32,26 @@
   }
 
   .reports-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .analysis-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .patient-form-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  .family-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 900px) {
   .stats-grid,
   .reports-kpi-grid,
+  .analysis-grid,
   .reports-grid,
   .reports-table-grid,
   .settings-grid,
@@ -78,6 +87,10 @@
   .table {
     min-width: 720px;
   }
+
+  .consent-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -96,7 +109,7 @@
   }
 
   .login-card {
-    padding: 2rem 1.375rem;
+    padding: 2rem 1.125rem;
   }
 
   .page-title {
@@ -112,6 +125,16 @@
   .form-section,
   .stat-card {
     padding: 1.125rem;
+  }
+
+  .family-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .document-item {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .stats-grid {
@@ -135,6 +158,19 @@
 
   .result-actions .btn {
     width: 100%;
+  }
+
+  .reports-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .report-actions .btn {
+    width: 100%;
+  }
+
+  .btn {
+    white-space: normal;
   }
 
   .plot-container {

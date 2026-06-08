@@ -1,42 +1,20 @@
 from flask import Flask
 
-from app.models import (
-    Avaliacao,
-    AvaliacaoSintoma,
-    DocumentoPaciente,
-    FamiliarPaciente,
-    LimiarDecisao,
-    Paciente,
-    PesoSintoma,
-    Profissional,
-    Sexo,
-    Sintoma,
-)
+from app.blueprints import register_blueprints
+from app.database import init_db
+from app.services.seed_data import sync_mvp_defaults
+from app.template_context import register_template_context
 
 
-def create_app():
+def create_app(config_object="config.Config"):
     app = Flask(__name__)
-    app.config.from_object("config.Config")
-
-    from app.database import init_db
-    from app.services.seed_data import sync_mvp_defaults
+    app.config.from_object(config_object)
 
     with app.app_context():
         init_db()
         sync_mvp_defaults()
 
-    from app.assessments import assessments_bp
-    from app.auth import auth_bp
-    from app.dashboard import dashboard_bp
-    from app.patients import patients_bp
-    from app.reports import reports_bp
-    from app.settings import settings_bp
-
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(dashboard_bp)
-    app.register_blueprint(patients_bp)
-    app.register_blueprint(assessments_bp)
-    app.register_blueprint(reports_bp)
-    app.register_blueprint(settings_bp)
+    register_blueprints(app)
+    register_template_context(app)
 
     return app

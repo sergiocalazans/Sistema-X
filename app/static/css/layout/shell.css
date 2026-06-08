@@ -57,6 +57,17 @@
   font-size: .72rem;
 }
 
+.role-badge {
+  display: inline-flex;
+  margin-top: .25rem;
+  padding: .125rem .4rem;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: .68rem;
+  font-weight: 700;
+}
+
 .sidebar-nav {
   flex: 1;
   display: flex;

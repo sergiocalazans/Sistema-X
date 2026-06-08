@@ -8,7 +8,7 @@ O Sistema-X permite cadastrar pacientes, registrar familiares, anexar documentos
 
 Apoiar profissionais da saúde e equipes técnicas na organização da jornada do paciente com suspeita de SXF, reduzindo perda de informações entre cadastro, triagem, exame, resultado e suporte familiar.
 
-O sistema também busca manter registros compatíveis com boas práticas de proteção de dados, com campos para consentimento, autorização de comunicação e documentação de finalidade assistencial.
+O sistema também busca manter registros compatíveis com boas práticas de proteção de dados, com campos para consentimento e documentação de finalidade assistencial.
 
 ## 🧭 Jornada Atendida
 
@@ -55,7 +55,6 @@ Para resultados negativos, o sistema permite registrar:
 - Características físicas.
 - Fotos de rosto, perfil e lado.
 - Registro de conformidade LGPD.
-- Autorização para envio de e-mails.
 
 ### 👥 Familiares
 
@@ -88,7 +87,6 @@ Para resultados negativos, o sistema permite registrar:
 - Plano pós-diagnóstico.
 - Suporte pós-diagnóstico.
 - Geração de documento textual da jornada do paciente.
-- Envio de e-mail via SMTP quando configurado.
 
 ### 📊 Histórico e Relatórios
 
@@ -220,20 +218,6 @@ O limite padrão de upload é 16 MB e pode ser alterado com:
 MAX_CONTENT_LENGTH=16777216
 ```
 
-# ✉️ Configuração de E-mail
-
-Para habilitar envio direto de e-mails, configure:
-
-```env
-SMTP_HOST=smtp.exemplo.com
-SMTP_PORT=587
-SMTP_USER=usuario
-SMTP_PASSWORD=senha
-SMTP_FROM=sistema-x@exemplo.com
-```
-
-Sem SMTP configurado, a tela de resultado ainda pode abrir o cliente de e-mail do usuário com assunto e corpo preenchidos.
-
 # ▶️ Executando
 
 Inicie a aplicação:
@@ -258,19 +242,21 @@ python seed.py
 
 O seed cria ou atualiza:
 
-- profissional demonstrativo;
+- usuários demonstrativos por perfil;
 - sintomas;
 - pesos por sexo;
 - limiares de decisão;
 - pacientes demonstrativos;
+- avaliações e encaminhamentos demonstrativos;
 - familiares;
 - documentos anteriores.
 
-Usuário demonstrativo:
+Usuários demonstrativos:
 
 ```text
-E-mail: contato@sxf.com
-Senha: 123456
+Administrador: contato@sxf.com / 123456
+Profissional: triagem@sxf.com / 123456
+Visualizador: relatorios@sxf.com / 123456
 ```
 
 # 🗄 Modelo de Dados
@@ -303,7 +289,6 @@ SELECT * FROM sintoma;
 O Sistema-X trabalha com dados pessoais e dados sensíveis de saúde. Por isso, o projeto inclui registros de:
 
 - consentimento para tratamento de dados sensíveis;
-- autorização para comunicação por e-mail;
 - observações sobre finalidade e contexto do tratamento;
 - controle de acesso por login;
 - senhas com hash;

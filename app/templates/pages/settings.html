@@ -23,6 +23,10 @@
             <label class="form-label">Especialidade</label>
             <input name="especialidade" class="form-input form-control" value="{{ professional.especialidade }}" required />
           </div>
+          <div class="form-group">
+            <label class="form-label">Tipo de usuário</label>
+            <input class="form-input form-control" value="{{ current_user_role_label }}" disabled />
+          </div>
           <div class="form-actions">
             <button class="btn btn-primary" type="submit">Salvar login</button>
           </div>

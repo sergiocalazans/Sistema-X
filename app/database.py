@@ -43,11 +43,26 @@ def create_database_if_not_exists() -> None:
 
 
 def init_db() -> None:
-    import app 
+    from app import models  # noqa: F401
 
     create_database_if_not_exists()
     Base.metadata.create_all(bind=engine)
+    # Mantém bancos já criados compatíveis com colunas adicionadas durante a evolução do projeto.
+    migrate_professional_schema()
     migrate_patient_schema()
+
+
+def migrate_professional_schema() -> None:
+    inspector = inspect(engine)
+    if "profissional" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("profissional")}
+    dialect = engine.dialect.name
+
+    with engine.begin() as connection:
+        if "tipo_usuario" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "profissional", "tipo_usuario", "VARCHAR(40) NOT NULL DEFAULT 'profissional'")))
 
 
 def migrate_patient_schema() -> None:
@@ -89,8 +104,6 @@ def migrate_patient_schema() -> None:
             connection.execute(text(_add_column_sql(dialect, "paciente", "foto_lado", "VARCHAR(255) NULL")))
         if "consentimento_lgpd" not in columns:
             connection.execute(text(_add_column_sql(dialect, "paciente", "consentimento_lgpd", _boolean_sql(dialect, default=False))))
-        if "consentimento_email" not in columns:
-            connection.execute(text(_add_column_sql(dialect, "paciente", "consentimento_email", _boolean_sql(dialect, default=False))))
         if "observacoes_lgpd" not in columns:
             connection.execute(text(_add_column_sql(dialect, "paciente", "observacoes_lgpd", _text_sql(dialect, nullable=True))))
         if "profissional_id" in columns:
