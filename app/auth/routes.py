@@ -29,13 +29,13 @@ def login():
 @auth_bp.route("/cadastro", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        nome = (request.form.get("nome") or "Profissional").strip()
-        especialidade = (request.form.get("especialidade") or "Saúde").strip()
+        nome = (request.form.get("nome") or "").strip()
+        especialidade = (request.form.get("especialidade") or "").strip()
         email = (request.form.get("email") or "").strip().lower()
         senha = request.form.get("senha") or ""
 
-        if not email or not senha:
-            flash("Informe e-mail e senha.", "error")
+        if not nome or not especialidade or not email or not senha:
+            flash("Informe nome, especialidade, e-mail e senha.", "error")
             return render_template("pages/login.html", mode="register")
         if len(senha) < 6:
             flash("A senha deve ter pelo menos 6 caracteres.", "error")
