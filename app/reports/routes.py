@@ -1,14 +1,14 @@
 from flask import Blueprint, render_template
 
 from app.services.reports import build_reports
-from app.shared.auth import current_professional_id, login_required
+from app.shared.auth import ROLE_ADMIN, ROLE_PROFESSIONAL, ROLE_VIEWER, current_professional_id, role_required
 from app.shared.db import db_session
 
 reports_bp = Blueprint("reports", __name__, url_prefix="/relatorios")
 
 
 @reports_bp.get("")
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL, ROLE_VIEWER)
 def index():
     profissional_id = current_professional_id()
     with db_session() as db:

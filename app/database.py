@@ -47,7 +47,21 @@ def init_db() -> None:
 
     create_database_if_not_exists()
     Base.metadata.create_all(bind=engine)
+    migrate_professional_schema()
     migrate_patient_schema()
+
+
+def migrate_professional_schema() -> None:
+    inspector = inspect(engine)
+    if "profissional" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("profissional")}
+    dialect = engine.dialect.name
+
+    with engine.begin() as connection:
+        if "tipo_usuario" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "profissional", "tipo_usuario", "VARCHAR(40) NOT NULL DEFAULT 'profissional'")))
 
 
 def migrate_patient_schema() -> None:

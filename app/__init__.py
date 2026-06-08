@@ -39,4 +39,13 @@ def create_app():
     app.register_blueprint(reports_bp)
     app.register_blueprint(settings_bp)
 
+    from app.shared.auth import current_user_role, current_user_role_label
+
+    @app.context_processor
+    def inject_current_user_role():
+        return {
+            "current_user_role": current_user_role(),
+            "current_user_role_label": current_user_role_label(),
+        }
+
     return app

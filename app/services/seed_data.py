@@ -86,6 +86,7 @@ def sync_profissional_demo(db):
         profissional.nome = "Dr. Admin"
         profissional.senha_hash = generate_password_hash("123456")
         profissional.especialidade = "Genética Médica"
+        profissional.tipo_usuario = "admin"
         return profissional, False
 
     profissional = Profissional(
@@ -93,6 +94,7 @@ def sync_profissional_demo(db):
         email="contato@sxf.com",
         senha_hash=generate_password_hash("123456"),
         especialidade="Genética Médica",
+        tipo_usuario="admin",
     )
     db.add(profissional)
     db.flush()

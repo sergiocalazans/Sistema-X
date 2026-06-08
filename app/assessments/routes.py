@@ -4,7 +4,7 @@ from flask import Blueprint, flash, redirect, render_template, request, send_fil
 
 from app.models import Avaliacao, AvaliacaoSintoma, LimiarDecisao, PesoSintoma, Sintoma
 from app.services.exports import assessments_workbook
-from app.shared.auth import current_professional_id, login_required
+from app.shared.auth import ROLE_ADMIN, ROLE_PROFESSIONAL, current_professional_id, role_required
 from app.shared.db import db_session
 from app.shared.formatters import assessment_view
 from app.shared.patients import professional_patient_query
@@ -13,7 +13,7 @@ assessments_bp = Blueprint("assessments", __name__, url_prefix="/avaliacoes")
 
 
 @assessments_bp.get("")
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def index():
     profissional_id = current_professional_id()
     with db_session() as db:
@@ -28,7 +28,7 @@ def index():
 
 
 @assessments_bp.route("/nova", methods=["GET", "POST"])
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def create():
     profissional_id = current_professional_id()
     with db_session() as db:
@@ -93,7 +93,7 @@ def create():
 
 
 @assessments_bp.get("/<int:assessment_id>/resultado")
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def result(assessment_id):
     profissional_id = current_professional_id()
     with db_session() as db:
@@ -116,7 +116,7 @@ def result(assessment_id):
 
 
 @assessments_bp.get("/<int:assessment_id>/documento")
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def document(assessment_id):
     profissional_id = current_professional_id()
     with db_session() as db:
@@ -140,7 +140,7 @@ def document(assessment_id):
 
 
 @assessments_bp.get("/export")
-@login_required
+@role_required(ROLE_ADMIN, ROLE_PROFESSIONAL)
 def export():
     profissional_id = current_professional_id()
     with db_session() as db:

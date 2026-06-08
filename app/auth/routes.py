@@ -18,6 +18,7 @@ def login():
             profissional = db.query(Profissional).filter(func.lower(Profissional.email) == email).first()
             if profissional and check_password_hash(profissional.senha_hash, senha):
                 session["profissional_id"] = profissional.id
+                session["tipo_usuario"] = profissional.tipo_usuario
                 return redirect(url_for("dashboard.index"))
 
         flash("E-mail ou senha inválidos.", "error")
@@ -51,11 +52,13 @@ def register():
                 email=email,
                 senha_hash=generate_password_hash(senha),
                 especialidade=especialidade,
+                tipo_usuario="profissional",
             )
             db.add(profissional)
             db.commit()
             db.refresh(profissional)
             session["profissional_id"] = profissional.id
+            session["tipo_usuario"] = profissional.tipo_usuario
 
         return redirect(url_for("dashboard.index"))
 
