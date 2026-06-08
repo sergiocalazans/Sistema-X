@@ -89,8 +89,6 @@ def migrate_patient_schema() -> None:
             connection.execute(text(_add_column_sql(dialect, "paciente", "foto_lado", "VARCHAR(255) NULL")))
         if "consentimento_lgpd" not in columns:
             connection.execute(text(_add_column_sql(dialect, "paciente", "consentimento_lgpd", _boolean_sql(dialect, default=False))))
-        if "consentimento_email" not in columns:
-            connection.execute(text(_add_column_sql(dialect, "paciente", "consentimento_email", _boolean_sql(dialect, default=False))))
         if "observacoes_lgpd" not in columns:
             connection.execute(text(_add_column_sql(dialect, "paciente", "observacoes_lgpd", _text_sql(dialect, nullable=True))))
         if "profissional_id" in columns:

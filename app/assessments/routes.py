@@ -1,9 +1,6 @@
 from io import BytesIO
-import smtplib
-from urllib.parse import quote
-from email.message import EmailMessage
 
-from flask import Blueprint, current_app, flash, redirect, render_template, request, send_file, url_for
+from flask import Blueprint, flash, redirect, render_template, request, send_file, url_for
 
 from app.models import Avaliacao, AvaliacaoSintoma, LimiarDecisao, PesoSintoma, Sintoma
 from app.services.exports import assessments_workbook
@@ -115,7 +112,6 @@ def result(assessment_id):
             assessment=assessment_view(avaliacao),
             should_refer=avaliacao.encaminhar,
             bar_width=min(avaliacao.score_calculado * 100, 100),
-            mailto_link=_mailto_link(avaliacao),
         )
 
 
@@ -143,31 +139,6 @@ def document(assessment_id):
         )
 
 
-@assessments_bp.post("/<int:assessment_id>/email")
-@login_required
-def send_email(assessment_id):
-    profissional_id = current_professional_id()
-    with db_session() as db:
-        avaliacao = (
-            db.query(Avaliacao)
-            .filter(Avaliacao.id == assessment_id, Avaliacao.profissional_id == profissional_id)
-            .first()
-        )
-        if not avaliacao:
-            flash("Avaliação não encontrada.", "error")
-            return redirect(url_for("assessments.index"))
-        if not avaliacao.paciente.email or not avaliacao.paciente.consentimento_email:
-            flash("E-mail não autorizado ou não cadastrado para este paciente.", "error")
-            return redirect(url_for("assessments.result", assessment_id=assessment_id))
-
-        sent = _send_assessment_email(avaliacao)
-        if sent:
-            flash("E-mail enviado com sucesso.", "success")
-        else:
-            flash("Configure SMTP_HOST, SMTP_USER e SMTP_PASSWORD para envio direto de e-mails.", "error")
-        return redirect(url_for("assessments.result", assessment_id=assessment_id))
-
-
 @assessments_bp.get("/export")
 @login_required
 def export():
@@ -192,26 +163,6 @@ def _patient_stage_from_assessment(avaliacao):
     if avaliacao.encaminhamento_exame:
         return "exame"
     return "triagem"
-
-
-def _mailto_link(avaliacao):
-    paciente = avaliacao.paciente
-    if not paciente.email or not paciente.consentimento_email:
-        return None
-
-    subject = quote(f"Resumo da jornada - {paciente.nome}")
-    lines = [
-        f"Paciente: {paciente.nome}",
-        f"Resultado da triagem: {assessment_view(avaliacao)['recommendation']}",
-        f"Score: {avaliacao.score_calculado:.2f}",
-        f"Resultado do exame: {avaliacao.resultado_exame}",
-    ]
-    if avaliacao.tipo_resultado:
-        lines.append(f"Tipo: {avaliacao.tipo_resultado.replace('_', ' ')}")
-    if avaliacao.plano_pos_diagnostico:
-        lines.append(f"Plano pós-diagnóstico: {avaliacao.plano_pos_diagnostico}")
-    body = quote("\r\n".join(lines))
-    return f"mailto:{paciente.email}?subject={subject}&body={body}"
 
 
 def _assessment_document(avaliacao):
@@ -262,27 +213,4 @@ def _assessment_document(avaliacao):
         "Documentos anteriores",
         "\n".join(documentos) if documentos else "Nenhum documento cadastrado",
     ])
-
-
-def _send_assessment_email(avaliacao):
-    host = current_app.config.get("SMTP_HOST")
-    if not host:
-        return False
-
-    paciente = avaliacao.paciente
-    message = EmailMessage()
-    message["Subject"] = f"Resumo da jornada - {paciente.nome}"
-    message["From"] = current_app.config["SMTP_FROM"]
-    message["To"] = paciente.email
-    message.set_content(_assessment_document(avaliacao))
-
-    try:
-        with smtplib.SMTP(host, current_app.config["SMTP_PORT"]) as smtp:
-            smtp.starttls()
-            if current_app.config.get("SMTP_USER"):
-                smtp.login(current_app.config["SMTP_USER"], current_app.config.get("SMTP_PASSWORD") or "")
-            smtp.send_message(message)
-    except (OSError, smtplib.SMTPException):
-        return False
-    return True
 

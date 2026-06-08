@@ -139,7 +139,6 @@ def save_patient(patient_id=None):
         paciente.triagem_socioeconomica = optional(request.form.get("triagem_socioeconomica"))
         paciente.caracteristicas_fisicas = optional(request.form.get("caracteristicas_fisicas"))
         paciente.consentimento_lgpd = request.form.get("consentimento_lgpd") == "on"
-        paciente.consentimento_email = request.form.get("consentimento_email") == "on"
         paciente.observacoes_lgpd = optional(request.form.get("observacoes_lgpd"))
 
         if not patient_id:

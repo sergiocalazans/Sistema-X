@@ -67,7 +67,6 @@ class Paciente(Base):
     foto_perfil: Mapped[str | None] = mapped_column(String(255), nullable=True)
     foto_lado: Mapped[str | None] = mapped_column(String(255), nullable=True)
     consentimento_lgpd: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    consentimento_email: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     observacoes_lgpd: Mapped[str | None] = mapped_column(Text, nullable=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 

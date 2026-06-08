@@ -68,12 +68,6 @@
           <a class="btn btn-primary" href="{{ url_for('assessments.create') }}">Nova triagem</a>
           <a class="btn btn-outline-secondary" href="{{ url_for('assessments.index') }}">Ver histórico</a>
           <a class="btn btn-outline-secondary" href="{{ url_for('assessments.document', assessment_id=assessment.id) }}">Gerar documento</a>
-          {% if mailto_link %}
-            <form action="{{ url_for('assessments.send_email', assessment_id=assessment.id) }}" method="post">
-              <button class="btn btn-outline-secondary" type="submit">Enviar e-mail</button>
-            </form>
-            <a class="btn btn-outline-secondary" href="{{ mailto_link }}">Abrir e-mail</a>
-          {% endif %}
         </div>
       </div>
     </div>

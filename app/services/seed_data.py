@@ -161,7 +161,6 @@ def sync_pacientes_demo(db, profissional):
         paciente.triagem_socioeconomica = demo["triagem_socioeconomica"]
         paciente.caracteristicas_fisicas = demo["caracteristicas_fisicas"]
         paciente.consentimento_lgpd = True
-        paciente.consentimento_email = True
         paciente.observacoes_lgpd = "Dados sensíveis registrados para finalidade assistencial e extensionista do Sistema-X."
         _sync_demo_relatives(paciente, demo["familiares"])
         _sync_demo_documents(paciente, demo["documentos"])
