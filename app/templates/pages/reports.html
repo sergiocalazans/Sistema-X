@@ -1,9 +1,17 @@
 {% extends "app.html" %}
 
 {% block content %}
-  <div class="page-header">
-    <div class="page-title">Relatórios</div>
-    <div class="page-subtitle">Indicadores e análises da triagem SXF</div>
+  <div class="page-header reports-header">
+    <div>
+      <div class="page-title">Relatórios</div>
+      <div class="page-subtitle">Indicadores e análises da triagem SXF</div>
+    </div>
+    <div class="report-actions">
+      <button class="btn btn-outline-secondary" type="button" data-print-report>
+        <span data-icon="print"></span>
+        Imprimir PDF
+      </button>
+    </div>
   </div>
 
   <div class="page-body">

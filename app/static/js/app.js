@@ -58,6 +58,13 @@ function bindShell() {
   });
 }
 
+function bindReportPrint() {
+  document.querySelector("[data-print-report]")?.addEventListener("click", () => {
+    renderCharts();
+    window.setTimeout(() => window.print(), 200);
+  });
+}
+
 function bindSymptoms() {
   document.querySelectorAll(".symptom-input").forEach((input) => {
     input.addEventListener("change", () => {
@@ -111,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
   hydrateIcons();
   bindTheme();
   bindShell();
+  bindReportPrint();
   bindSymptoms();
   renderCharts();
 });
