@@ -42,6 +42,10 @@
   .patient-form-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  .family-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 900px) {
@@ -83,6 +87,10 @@
   .table {
     min-width: 720px;
   }
+
+  .consent-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -101,7 +109,7 @@
   }
 
   .login-card {
-    padding: 2rem 1.375rem;
+    padding: 2rem 1.125rem;
   }
 
   .page-title {
@@ -117,6 +125,16 @@
   .form-section,
   .stat-card {
     padding: 1.125rem;
+  }
+
+  .family-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .document-item {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .stats-grid {
@@ -149,6 +167,10 @@
 
   .report-actions .btn {
     width: 100%;
+  }
+
+  .btn {
+    white-space: normal;
   }
 
   .plot-container {
