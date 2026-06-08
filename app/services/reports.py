@@ -351,7 +351,7 @@ def _top_symptoms_chart(symptoms):
 
     top = symptoms["symptom"].value_counts().head(8).reset_index()
     top.columns = ["symptom", "total"]
-    fig = px.bar(top, x="total", y="symptom", orientation="h", labels={"total": "Ocorrencias", "symptom": "Sintoma"})
+    fig = px.bar(top, x="total", y="symptom", orientation="h", labels={"total": "Ocorrências", "symptom": "Sintoma"})
     fig.update_traces(marker_color="#7C3AED")
     fig.update_layout(yaxis={"categoryorder": "total ascending"})
     return _style_figure(fig)

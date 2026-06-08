@@ -2,7 +2,7 @@ from io import BytesIO
 
 from flask import Blueprint, flash, redirect, render_template, request, send_file, url_for
 
-from app.models import Avaliacao, AvaliacaoSintoma, LimiarDecisao, PesoSintoma, Sintoma
+from app.models import Avaliacao, AvaliacaoSintoma, LimiarDecisao, Paciente, PesoSintoma, Sintoma
 from app.services.exports import assessments_workbook
 from app.shared.auth import ROLE_ADMIN, ROLE_PROFESSIONAL, current_professional_id, role_required
 from app.shared.db import db_session
@@ -32,7 +32,7 @@ def index():
 def create():
     profissional_id = current_professional_id()
     with db_session() as db:
-        pacientes = professional_patient_query(db, profissional_id).order_by("nome").all()
+        pacientes = professional_patient_query(db, profissional_id).order_by(Paciente.nome).all()
         sintomas = db.query(Sintoma).order_by(Sintoma.categoria, Sintoma.descricao).all()
 
         if request.method == "POST":

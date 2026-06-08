@@ -97,6 +97,9 @@ def patient_file(patient_id, filename):
     if directory not in requested.parents and requested != directory:
         flash("Arquivo inválido.", "error")
         return redirect(url_for("patients.edit", patient_id=patient_id))
+    if not requested.is_file():
+        flash("Arquivo não encontrado.", "error")
+        return redirect(url_for("patients.edit", patient_id=patient_id))
     return send_file(requested)
 
 
