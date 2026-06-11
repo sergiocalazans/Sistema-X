@@ -4,7 +4,7 @@ from flask import Blueprint, flash, redirect, render_template, request, send_fil
 
 from app.models import Avaliacao, AvaliacaoSintoma, LimiarDecisao, Paciente, PesoSintoma, Sintoma
 from app.services.exports import assessments_workbook
-from app.shared.auth import ROLE_ADMIN, ROLE_PROFESSIONAL, current_professional_id, role_required
+from app.shared.auth import ROLE_ADMIN, ROLE_PROFESSIONAL, current_professional_id, current_user_role, role_required
 from app.shared.db import db_session
 from app.shared.formatters import assessment_view
 from app.shared.patients import professional_patient_query
@@ -17,12 +17,10 @@ assessments_bp = Blueprint("assessments", __name__, url_prefix="/avaliacoes")
 def index():
     profissional_id = current_professional_id()
     with db_session() as db:
-        avaliacoes = (
-            db.query(Avaliacao)
-            .filter(Avaliacao.profissional_id == profissional_id)
-            .order_by(Avaliacao.realizado_em.desc())
-            .all()
-        )
+        query = db.query(Avaliacao)
+        if current_user_role() != ROLE_ADMIN:
+            query = query.filter(Avaliacao.profissional_id == profissional_id)
+        avaliacoes = query.order_by(Avaliacao.realizado_em.desc()).all()
         rows = [assessment_view(item) for item in avaliacoes]
         return render_template("pages/assessments.html", active_page="assessments", assessments=rows)
 
@@ -97,11 +95,10 @@ def create():
 def result(assessment_id):
     profissional_id = current_professional_id()
     with db_session() as db:
-        avaliacao = (
-            db.query(Avaliacao)
-            .filter(Avaliacao.id == assessment_id, Avaliacao.profissional_id == profissional_id)
-            .first()
-        )
+        query = db.query(Avaliacao).filter(Avaliacao.id == assessment_id)
+        if current_user_role() != ROLE_ADMIN:
+            query = query.filter(Avaliacao.profissional_id == profissional_id)
+        avaliacao = query.first()
         if not avaliacao:
             flash("Avaliação não encontrada.", "error")
             return redirect(url_for("assessments.index"))
@@ -120,11 +117,10 @@ def result(assessment_id):
 def document(assessment_id):
     profissional_id = current_professional_id()
     with db_session() as db:
-        avaliacao = (
-            db.query(Avaliacao)
-            .filter(Avaliacao.id == assessment_id, Avaliacao.profissional_id == profissional_id)
-            .first()
-        )
+        query = db.query(Avaliacao).filter(Avaliacao.id == assessment_id)
+        if current_user_role() != ROLE_ADMIN:
+            query = query.filter(Avaliacao.profissional_id == profissional_id)
+        avaliacao = query.first()
         if not avaliacao:
             flash("Avaliação não encontrada.", "error")
             return redirect(url_for("assessments.index"))
@@ -144,7 +140,7 @@ def document(assessment_id):
 def export():
     profissional_id = current_professional_id()
     with db_session() as db:
-        workbook = assessments_workbook(db, profissional_id)
+        workbook = assessments_workbook(db, profissional_id, include_all=current_user_role() == ROLE_ADMIN)
         return send_file(
             workbook,
             as_attachment=True,
