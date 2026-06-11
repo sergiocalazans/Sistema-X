@@ -95,6 +95,31 @@
   .page-header,
   .page-body {
     background: #fff !important;
+    color: #000 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .page-title,
+  .page-subtitle,
+  .stat-label,
+  .stat-value,
+  .analysis-title,
+  .analysis-value,
+  .analysis-description,
+  .report-title,
+  .report-subtitle,
+  .table-title,
+  .table th,
+  .table td,
+  th,
+  td,
+  td.name,
+  td.score,
+  p,
+  span,
+  div {
+    color: #000 !important;
   }
 
   .sidebar,
@@ -129,9 +154,59 @@
   .card,
   .report-card,
   .table-card,
-  .stat-card {
+  .stat-card,
+  .analysis-card {
+    background: #fff !important;
     break-inside: avoid;
+    border-color: #000 !important;
     box-shadow: none !important;
+  }
+
+  .stat-icon,
+  .stat-icon.blue,
+  .stat-icon.orange,
+  .stat-icon.green,
+  .stat-icon.purple {
+    background: transparent !important;
+    color: #000 !important;
+  }
+
+  .stat-icon svg {
+    color: #000 !important;
+    stroke: #000 !important;
+  }
+
+  .table,
+  table,
+  .table th,
+  .table td,
+  th,
+  td {
+    background: #fff !important;
+    border-color: #000 !important;
+  }
+
+  .plot-container,
+  .plot-container .js-plotly-plot,
+  .plot-container .plotly {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .plot-container svg text,
+  .plot-container .xtick text,
+  .plot-container .ytick text,
+  .plot-container .legendtext,
+  .plot-container .gtitle,
+  .plot-container .annotation-text {
+    fill: #000 !important;
+    color: #000 !important;
+  }
+
+  .plot-container .gridlayer path,
+  .plot-container .xgrid,
+  .plot-container .ygrid {
+    stroke: #d1d5db !important;
   }
 
   .plot-container {
