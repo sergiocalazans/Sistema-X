@@ -1,4 +1,4 @@
-# Sistema-X
+# Sistema-X - Sistema de Triagem Clínica para Síndrome do X Frágil (SXF)
 
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-2563eb)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-16a34a)
@@ -11,21 +11,26 @@ Sistema web de triagem clínica para apoio à identificação de sinais relacion
 
 O projeto organiza informações clínicas, histórico familiar, documentos, fotos e indicadores em uma interface web construída com Flask. A partir das respostas da avaliação, o sistema calcula um score ponderado por sexo, aplica limiares configurados e sugere se o caso deve ser priorizado para encaminhamento.
 
-## Sumário
+## 🧭 Sumário
 
-- [Funcionalidades](#funcionalidades)
-- [Tecnologias](#tecnologias)
-- [Arquitetura](#arquitetura)
-- [Como executar](#como-executar)
-- [Acessos de demonstração](#acessos-de-demonstração)
-- [Modelo de dados](#modelo-de-dados)
-- [Relatórios](#relatórios)
-- [Vídeo tutorial do sistema](#vídeo-tutorial-do-sistema)
-- [Vídeo de explicação do projeto](#vídeo-de-explicação-do-projeto)
-- [Colaboradores](#colaboradores)
-- [Licença](#licença)
+- [✨ Funcionalidades](#funcionalidades)
+- [🔐 Regras de acesso](#regras-de-acesso)
+- [🩺 Regras de triagem](#regras-de-triagem)
+- [🛠️ Tecnologias](#tecnologias)
+- [🏗️ Arquitetura](#arquitetura)
+- [▶️ Como executar](#como-executar)
+- [🔑 Acessos de demonstração](#acessos-de-demonstração)
+- [🗄️ Modelo de dados](#modelo-de-dados)
+- [📊 Relatórios](#relatórios)
+- [✅ Validação local](#validação-local)
+- [🚀 Fluxo de desenvolvimento](#fluxo-de-desenvolvimento)
+- [🎥 Vídeo tutorial do sistema](#vídeo-tutorial-do-sistema)
+- [🎬 Vídeo de explicação do projeto](#vídeo-de-explicação-do-projeto)
+- [👥 Colaboradores](#colaboradores)
+- [📄 Licença](#licença)
+- [🎓 Projeto universitário](#projeto-universitário)
 
-## Funcionalidades
+## ✨ Funcionalidades
 
 - Autenticação de usuários com controle de sessão.
 - Níveis de acesso por perfil: administrador, profissional da saúde e visualizador.
@@ -43,7 +48,7 @@ O projeto organiza informações clínicas, histórico familiar, documentos, fot
 - Banco de dados populado com dados de demonstração para testes e apresentação.
 - Layout responsivo para uso em desktop, tablet e celular.
 
-## Regras de acesso
+## 🔐 Regras de acesso
 
 | Perfil                | Permissões principais                                                                                      |
 | --------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -53,7 +58,7 @@ O projeto organiza informações clínicas, histórico familiar, documentos, fot
 
 Usuários cadastrados pelo administrador recebem uma senha padrão. No primeiro acesso, o sistema direciona o usuário para a tela de atualização de senha antes de liberar as demais funcionalidades.
 
-## Regras de triagem
+## 🩺 Regras de triagem
 
 - Cada sintoma possui peso definido na aplicação.
 - O score final é calculado a partir dos sintomas marcados durante a avaliação.
@@ -61,7 +66,7 @@ Usuários cadastrados pelo administrador recebem uma senha padrão. No primeiro 
 - Quando o score atinge ou ultrapassa o limiar, o sistema recomenda encaminhamento.
 - Quando o score fica abaixo do limiar, o caso permanece como não prioritário, mas ainda pode ser acompanhado pela equipe.
 
-## Tecnologias
+## 🛠️ Tecnologias
 
 | Camada           | Tecnologias                                                                                                                                                                                                                                                                                                                                         |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -71,7 +76,7 @@ Usuários cadastrados pelo administrador recebem uma senha padrão. No primeiro 
 | Gráficos e dados | ![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white) ![Plotly](https://img.shields.io/badge/Plotly-3F4F75?logo=plotly&logoColor=white) ![OpenPyXL](https://img.shields.io/badge/OpenPyXL-217346)                                                                                                                       |
 | Relatórios       | ![ReportLab](https://img.shields.io/badge/ReportLab-PDF-b91c1c)                                                                                                                                                                                                                                                                                     |
 
-## Arquitetura
+## 🏗️ Arquitetura
 
 O projeto foi modularizado seguindo boas práticas de desenvolvimento web com Flask. As rotas foram organizadas em blueprints, os serviços concentram regras reutilizáveis e os templates foram separados por contexto funcional.
 
@@ -113,7 +118,7 @@ Sistema-X/
 └── seed.py                      # Popular banco com dados de exemplo
 ```
 
-## Como executar
+## ▶️ Como executar
 
 ### 1. Criar e ativar o ambiente virtual
 
@@ -163,7 +168,7 @@ Acesse no navegador:
 http://127.0.0.1:5000
 ```
 
-## Acessos de demonstração
+## 🔑 Acessos de demonstração
 
 | Perfil                | E-mail               | Senha    |
 | --------------------- | -------------------- | -------- |
@@ -173,7 +178,7 @@ http://127.0.0.1:5000
 
 Usuários criados pela tela administrativa também iniciam com a senha padrão `123456` e devem atualizar a senha no primeiro acesso.
 
-## Modelo de dados
+## 🗄️ Modelo de dados
 
 | Entidade       | Descrição                                                                                       |
 | -------------- | ----------------------------------------------------------------------------------------------- |
@@ -182,7 +187,7 @@ Usuários criados pela tela administrativa também iniciam com a senha padrão `
 | Avaliação      | Registra sintomas, score, limiar, recomendação, etapa, resultado e observações da triagem.      |
 | Encaminhamento | Controla solicitações, prioridades, status e acompanhamento dos pacientes encaminhados.         |
 
-## Relatórios
+## 📊 Relatórios
 
 A tela de relatórios apresenta indicadores gerais, análises por período, distribuição de resultados, sintomas frequentes, lista de avaliações e dados de encaminhamentos.
 
@@ -195,7 +200,7 @@ O sistema permite gerar PDF com:
 
 Também há exportação de dados para planilhas quando a análise precisar ser complementada fora do sistema.
 
-## Validação local
+## ✅ Validação local
 
 Antes de entregar alterações, recomenda-se executar:
 
@@ -217,7 +222,7 @@ Depois, validar no navegador:
 - Impressão e exportação de PDF.
 - Responsividade em diferentes tamanhos de tela.
 
-## Fluxo de desenvolvimento
+## 🚀 Fluxo de desenvolvimento
 
 1. Criar uma branch para a funcionalidade ou correção.
 2. Implementar a alteração respeitando a modularização existente.
@@ -225,30 +230,30 @@ Depois, validar no navegador:
 4. Executar verificações locais.
 5. Registrar commits com mensagens claras, iniciadas por `feat`, `fix`, `docs`, `refactor`, `style` ou `chore`.
 
-## Vídeo tutorial do sistema
+## 🎥 Vídeo tutorial do sistema
 
 Adicione aqui o link do vídeo tutorial de uso do sistema:
 
 [Link do vídeo tutorial do sistema](#)
 
-## Vídeo de explicação do projeto
+## 🎬 Vídeo de explicação do projeto
 
 Adicione aqui o link do vídeo de explicação do projeto:
 
 [Link do vídeo de explicação do projeto](#)
 
-## Colaboradores
+## 👥 Colaboradores
 
-| Nome                 | GitHub                                                |
-| -------------------- | ----------------------------------------------------- |
-| Gabriel Schwerdt     | [@gStringSchwerdt](https://github.com/StringSchwerdt) |
-| Millena Gurczakovski | [@MillenaGur](https://github.com/MillenaGur)          |
-| Sérgio Calazans      | [@sergiocalazans](https://github.com/sergiocalazans)  |
+| Nome                 | GitHub                                               |
+| -------------------- | ---------------------------------------------------- |
+| Gabriel Schwerdt     | [@StringSchwerdt](https://github.com/StringSchwerdt) |
+| Millena Gurczakovski | [@MillenaGur](https://github.com/MillenaGur)         |
+| Sérgio Calazans      | [@sergiocalazans](https://github.com/sergiocalazans) |
 
-## Licença
+## 📄 Licença
 
 Distribuído conforme a licença disponível em [LICENSE](LICENSE).
 
-## Projeto universitário
+## 🎓 Projeto universitário
 
 Projeto acadêmico desenvolvido para a disciplina **Experiência Criativa: Criando Soluções Computacionais**, da **Pontifícia Universidade Católica do Paraná (PUCPR)**.
