@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for
 
 from app.models import Avaliacao, Paciente, Profissional
-from app.shared.auth import current_professional_id, login_required
+from app.shared.auth import ROLE_ADMIN, current_professional_id, current_user_role, login_required
 from app.shared.db import db_session
 from app.shared.formatters import assessment_view
 
@@ -15,18 +15,19 @@ def index():
         return redirect(url_for("auth.login"))
 
     with db_session() as db:
-        total_patients = (
-            db.query(Paciente)
-            .join(Paciente.profissionais)
-            .filter(Profissional.id == profissional_id)
-            .count()
-        )
-        assessments = (
-            db.query(Avaliacao)
-            .filter(Avaliacao.profissional_id == profissional_id)
-            .order_by(Avaliacao.realizado_em.desc())
-            .all()
-        )
+        if current_user_role() == ROLE_ADMIN:
+            total_patients = db.query(Paciente).count()
+            assessments_query = db.query(Avaliacao)
+        else:
+            total_patients = (
+                db.query(Paciente)
+                .join(Paciente.profissionais)
+                .filter(Profissional.id == profissional_id)
+                .count()
+            )
+            assessments_query = db.query(Avaliacao).filter(Avaliacao.profissional_id == profissional_id)
+
+        assessments = assessments_query.order_by(Avaliacao.realizado_em.desc()).all()
         recent = [assessment_view(item) for item in assessments[:6]]
 
         return render_template(

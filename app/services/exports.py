@@ -5,14 +5,11 @@ import pandas as pd
 from app.models import Avaliacao, Paciente, Profissional
 
 
-def patients_workbook(db, profissional_id):
-    rows = (
-        db.query(Paciente)
-        .join(Paciente.profissionais)
-        .filter(Profissional.id == profissional_id)
-        .order_by(Paciente.criado_em.desc())
-        .all()
-    )
+def patients_workbook(db, profissional_id, include_all=False):
+    query = db.query(Paciente)
+    if not include_all:
+        query = query.join(Paciente.profissionais).filter(Profissional.id == profissional_id)
+    rows = query.order_by(Paciente.criado_em.desc()).distinct().all()
 
     data = []
     for paciente in rows:
@@ -61,13 +58,11 @@ def patients_workbook(db, profissional_id):
     return _xlsx_response(pd.DataFrame(data, columns=columns), "Pacientes")
 
 
-def assessments_workbook(db, profissional_id):
-    rows = (
-        db.query(Avaliacao)
-        .filter(Avaliacao.profissional_id == profissional_id)
-        .order_by(Avaliacao.realizado_em.desc())
-        .all()
-    )
+def assessments_workbook(db, profissional_id, include_all=False):
+    query = db.query(Avaliacao)
+    if not include_all:
+        query = query.filter(Avaliacao.profissional_id == profissional_id)
+    rows = query.order_by(Avaliacao.realizado_em.desc()).all()
 
     data = []
     for avaliacao in rows:

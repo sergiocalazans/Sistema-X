@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 
 from app.models import DocumentoPaciente, FamiliarPaciente, Paciente, Profissional, Sexo
 from app.services.exports import patients_workbook
-from app.shared.auth import ROLE_ADMIN, ROLE_PROFESSIONAL, current_professional_id, role_required
+from app.shared.auth import ROLE_ADMIN, ROLE_PROFESSIONAL, current_professional_id, current_user_role, role_required
 from app.shared.db import db_session
 from app.shared.formatters import patient_last_assessment, patient_last_score, recommendation_key, sex_label
 from app.shared.patients import professional_patient_query
@@ -73,7 +73,7 @@ def edit(patient_id):
 def export():
     profissional_id = current_professional_id()
     with db_session() as db:
-        workbook = patients_workbook(db, profissional_id)
+        workbook = patients_workbook(db, profissional_id, include_all=current_user_role() == ROLE_ADMIN)
         return send_file(
             workbook,
             as_attachment=True,

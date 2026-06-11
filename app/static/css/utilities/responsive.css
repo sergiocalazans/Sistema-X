@@ -39,6 +39,10 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .user-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .patient-form-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -52,6 +56,7 @@
   .stats-grid,
   .reports-kpi-grid,
   .analysis-grid,
+  .user-form-grid,
   .reports-grid,
   .reports-table-grid,
   .settings-grid,

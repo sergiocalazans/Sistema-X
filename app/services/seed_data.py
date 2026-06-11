@@ -274,6 +274,7 @@ def sync_profissional_demo(db):
             profissional.senha_hash = generate_password_hash("123456")
             profissional.especialidade = especialidade
             profissional.tipo_usuario = tipo_usuario
+            profissional.deve_atualizar_senha = False
         else:
             profissional = Profissional(
                 nome=nome,
@@ -281,6 +282,7 @@ def sync_profissional_demo(db):
                 senha_hash=generate_password_hash("123456"),
                 especialidade=especialidade,
                 tipo_usuario=tipo_usuario,
+                deve_atualizar_senha=False,
             )
             db.add(profissional)
             db.flush()

@@ -63,6 +63,8 @@ def migrate_professional_schema() -> None:
     with engine.begin() as connection:
         if "tipo_usuario" not in columns:
             connection.execute(text(_add_column_sql(dialect, "profissional", "tipo_usuario", "VARCHAR(40) NOT NULL DEFAULT 'profissional'")))
+        if "deve_atualizar_senha" not in columns:
+            connection.execute(text(_add_column_sql(dialect, "profissional", "deve_atualizar_senha", _boolean_sql(dialect, default=False))))
 
 
 def migrate_patient_schema() -> None:

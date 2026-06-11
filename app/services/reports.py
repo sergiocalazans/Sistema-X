@@ -6,9 +6,9 @@ import plotly.express as px
 from app.models import Avaliacao, AvaliacaoSintoma, Paciente, Sintoma
 
 
-def build_reports(db, profissional_id):
-    assessments = _assessments_frame(db, profissional_id)
-    symptoms = _symptoms_frame(db, profissional_id)
+def build_reports(db, profissional_id, include_all=False):
+    assessments = _assessments_frame(db, profissional_id, include_all)
+    symptoms = _symptoms_frame(db, profissional_id, include_all)
 
     return {
         "indicators": _indicators(assessments, symptoms),
@@ -22,8 +22,8 @@ def build_reports(db, profissional_id):
     }
 
 
-def _assessments_frame(db, profissional_id):
-    rows = (
+def _assessments_frame(db, profissional_id, include_all):
+    query = (
         db.query(
             Avaliacao.id,
             Avaliacao.score_calculado,
@@ -35,9 +35,10 @@ def _assessments_frame(db, profissional_id):
             Paciente.data_nascimento,
         )
         .join(Paciente, Paciente.id == Avaliacao.paciente_id)
-        .filter(Avaliacao.profissional_id == profissional_id)
-        .all()
     )
+    if not include_all:
+        query = query.filter(Avaliacao.profissional_id == profissional_id)
+    rows = query.all()
 
     data = []
     for row in rows:
@@ -59,14 +60,16 @@ def _assessments_frame(db, profissional_id):
     return pd.DataFrame(data)
 
 
-def _symptoms_frame(db, profissional_id):
-    rows = (
+def _symptoms_frame(db, profissional_id, include_all):
+    query = (
         db.query(Sintoma.descricao, Sintoma.categoria)
         .join(AvaliacaoSintoma, AvaliacaoSintoma.sintoma_id == Sintoma.id)
         .join(Avaliacao, Avaliacao.id == AvaliacaoSintoma.avaliacao_id)
-        .filter(Avaliacao.profissional_id == profissional_id, AvaliacaoSintoma.presente.is_(True))
-        .all()
+        .filter(AvaliacaoSintoma.presente.is_(True))
     )
+    if not include_all:
+        query = query.filter(Avaliacao.profissional_id == profissional_id)
+    rows = query.all()
 
     return pd.DataFrame([{
         "symptom": row.descricao,

@@ -67,7 +67,9 @@ def password():
             return redirect(url_for("settings.index"))
 
         profissional.senha_hash = generate_password_hash(nova_senha)
+        profissional.deve_atualizar_senha = False
         db.commit()
+        session["deve_atualizar_senha"] = False
 
     flash("Senha atualizada.", "success")
     return redirect(url_for("settings.index"))

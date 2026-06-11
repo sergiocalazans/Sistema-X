@@ -1,0 +1,84 @@
+{% extends "app.html" %}
+
+{% block content %}
+  <div class="page-header">
+    <div class="page-title">Usuários</div>
+    <div class="page-subtitle">Cadastro e manutenção de acessos do Sistema-X</div>
+  </div>
+
+  <div class="page-body">
+    <section class="form-section card">
+      <div class="form-section-title">Cadastrar usuário</div>
+      <form method="post" action="{{ url_for('users.create') }}">
+        <div class="form-grid user-form-grid">
+          <div class="form-group">
+            <label class="form-label">Nome</label>
+            <input name="nome" class="form-input form-control" autocomplete="name" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-mail</label>
+            <input name="email" class="form-input form-control" type="email" autocomplete="email" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Especialidade</label>
+            <input name="especialidade" class="form-input form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo de usuário</label>
+            <select name="tipo_usuario" class="form-input form-select" required>
+              {% for role, label in role_labels.items() %}
+                <option value="{{ role }}" {{ 'selected' if role == 'profissional' }}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-help">Senha padrão para novos usuários: <strong>{{ default_password }}</strong>. No primeiro acesso, o sistema solicitará a troca da senha.</div>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit"><span data-icon="plus"></span>Cadastrar usuário</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="table-card card users-table-card">
+      <div class="table-header">
+        <span class="table-title">Lista de usuários</span>
+      </div>
+      <div class="table-wrap table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Especialidade</th>
+              <th>Tipo</th>
+              <th>Status da senha</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              <tr>
+                <td class="name">{{ user.nome }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.especialidade }}</td>
+                <td>{{ role_labels.get(user.tipo_usuario, "Profissional") }}</td>
+                <td>
+                  {% if user.deve_atualizar_senha %}
+                    <span class="badge text-bg-warning">Troca obrigatória</span>
+                  {% else %}
+                    <span class="badge text-bg-success">Atualizada</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <form method="post" action="{{ url_for('users.delete', user_id=user.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir este usuário? Esta ação não poderá ser desfeita.');">
+                    <button class="btn btn-outline-secondary btn-sm" type="submit" {{ 'disabled' if user.id == session.profissional_id }}>Excluir</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+{% endblock %}
