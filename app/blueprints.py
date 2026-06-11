@@ -5,6 +5,7 @@ def register_blueprints(app):
     from app.patients import patients_bp
     from app.reports import reports_bp
     from app.settings import settings_bp
+    from app.users import users_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
@@ -12,3 +13,4 @@ def register_blueprints(app):
     app.register_blueprint(assessments_bp)
     app.register_blueprint(reports_bp)
     app.register_blueprint(settings_bp)
+    app.register_blueprint(users_bp)

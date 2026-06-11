@@ -37,6 +37,7 @@ class Profissional(Base):
     senha_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     especialidade: Mapped[str] = mapped_column(String(120), nullable=False)
     tipo_usuario: Mapped[str] = mapped_column(String(40), nullable=False, default="profissional")
+    deve_atualizar_senha: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     criado_em: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
     pacientes: Mapped[list[Paciente]] = relationship(

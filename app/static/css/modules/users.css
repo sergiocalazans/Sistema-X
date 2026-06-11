@@ -1,0 +1,12 @@
+.user-form-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.form-help {
+  color: var(--text-secondary);
+  font-size: .86rem;
+}
+
+.users-table-card {
+  margin-top: 1.5rem;
+}
