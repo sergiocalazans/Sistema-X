@@ -45,11 +45,11 @@ O projeto organiza informações clínicas, histórico familiar, documentos, fot
 
 ## Regras de acesso
 
-| Perfil | Permissões principais |
-| --- | --- |
-| Administrador | Acessa todos os dados do sistema, gerencia usuários, visualiza dashboards globais, relatórios e cadastros. |
-| Profissional da saúde | Registra pacientes, avaliações e encaminhamentos vinculados ao seu uso profissional. |
-| Visualizador | Consulta dashboards e relatórios, sem alterar dados sensíveis do sistema. |
+| Perfil                | Permissões principais                                                                                      |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Administrador         | Acessa todos os dados do sistema, gerencia usuários, visualiza dashboards globais, relatórios e cadastros. |
+| Profissional da saúde | Registra pacientes, avaliações e encaminhamentos vinculados ao seu uso profissional.                       |
+| Visualizador          | Consulta dashboards e relatórios, sem alterar dados sensíveis do sistema.                                  |
 
 Usuários cadastrados pelo administrador recebem uma senha padrão. No primeiro acesso, o sistema direciona o usuário para a tela de atualização de senha antes de liberar as demais funcionalidades.
 
@@ -63,13 +63,13 @@ Usuários cadastrados pelo administrador recebem uma senha padrão. No primeiro 
 
 ## Tecnologias
 
-| Camada | Tecnologias |
-| --- | --- |
-| Backend | ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) ![Flask](https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?logo=sqlalchemy&logoColor=white) |
-| Banco de dados | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white) ![PyMySQL](https://img.shields.io/badge/PyMySQL-003B57) |
-| Interface | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?logo=bootstrap&logoColor=white) |
-| Gráficos e dados | ![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white) ![Plotly](https://img.shields.io/badge/Plotly-3F4F75?logo=plotly&logoColor=white) ![OpenPyXL](https://img.shields.io/badge/OpenPyXL-217346) |
-| Relatórios | ![ReportLab](https://img.shields.io/badge/ReportLab-PDF-b91c1c) |
+| Camada           | Tecnologias                                                                                                                                                                                                                                                                                                                                         |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend          | ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) ![Flask](https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?logo=sqlalchemy&logoColor=white)                                                                                      |
+| Banco de dados   | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white) ![PyMySQL](https://img.shields.io/badge/PyMySQL-003B57)                                                                                                                                                                                                              |
+| Interface        | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?logo=bootstrap&logoColor=white) |
+| Gráficos e dados | ![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white) ![Plotly](https://img.shields.io/badge/Plotly-3F4F75?logo=plotly&logoColor=white) ![OpenPyXL](https://img.shields.io/badge/OpenPyXL-217346)                                                                                                                       |
+| Relatórios       | ![ReportLab](https://img.shields.io/badge/ReportLab-PDF-b91c1c)                                                                                                                                                                                                                                                                                     |
 
 ## Arquitetura
 
@@ -165,22 +165,22 @@ http://127.0.0.1:5000
 
 ## Acessos de demonstração
 
-| Perfil | E-mail | Senha |
-| --- | --- | --- |
-| Administrador | `contato@sxf.com` | `123456` |
-| Profissional da saúde | `triagem@sxf.com` | `123456` |
-| Visualizador | `relatorios@sxf.com` | `123456` |
+| Perfil                | E-mail               | Senha    |
+| --------------------- | -------------------- | -------- |
+| Administrador         | `contato@sxf.com`    | `123456` |
+| Profissional da saúde | `triagem@sxf.com`    | `123456` |
+| Visualizador          | `relatorios@sxf.com` | `123456` |
 
 Usuários criados pela tela administrativa também iniciam com a senha padrão `123456` e devem atualizar a senha no primeiro acesso.
 
 ## Modelo de dados
 
-| Entidade | Descrição |
-| --- | --- |
-| Usuário | Representa os usuários do sistema, seus perfis, status e controle de primeiro acesso. |
-| Paciente | Armazena dados pessoais, contato, documentos, fotos, informações clínicas e histórico familiar. |
-| Avaliação | Registra sintomas, score, limiar, recomendação, etapa, resultado e observações da triagem. |
-| Encaminhamento | Controla solicitações, prioridades, status e acompanhamento dos pacientes encaminhados. |
+| Entidade       | Descrição                                                                                       |
+| -------------- | ----------------------------------------------------------------------------------------------- |
+| Usuário        | Representa os usuários do sistema, seus perfis, status e controle de primeiro acesso.           |
+| Paciente       | Armazena dados pessoais, contato, documentos, fotos, informações clínicas e histórico familiar. |
+| Avaliação      | Registra sintomas, score, limiar, recomendação, etapa, resultado e observações da triagem.      |
+| Encaminhamento | Controla solicitações, prioridades, status e acompanhamento dos pacientes encaminhados.         |
 
 ## Relatórios
 
@@ -239,11 +239,11 @@ Adicione aqui o link do vídeo de explicação do projeto:
 
 ## Colaboradores
 
-| Nome | GitHub |
-| --- | --- |
-| Gabriel Schwerdt | [@gabriel-schwerdt](https://github.com/gabriel-schwerdt) |
-| Millena Gurczakovski | [@MillenaGurczakovski](https://github.com/MillenaGurczakovski) |
-| Sérgio Calazans | [@calazans0606](https://github.com/calazans0606) |
+| Nome                 | GitHub                                                |
+| -------------------- | ----------------------------------------------------- |
+| Gabriel Schwerdt     | [@gStringSchwerdt](https://github.com/StringSchwerdt) |
+| Millena Gurczakovski | [@MillenaGur](https://github.com/MillenaGur)          |
+| Sérgio Calazans      | [@sergiocalazans](https://github.com/sergiocalazans)  |
 
 ## Licença
 
