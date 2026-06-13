@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for
 
 from app.models import Avaliacao, Paciente, Profissional
-from app.shared.auth import ROLE_ADMIN, current_professional_id, current_user_role, login_required
+from app.shared.auth import current_professional_id, current_user_can_view_global_data
 from app.shared.db import db_session
 from app.shared.formatters import assessment_view
 
@@ -15,7 +15,7 @@ def index():
         return redirect(url_for("auth.login"))
 
     with db_session() as db:
-        if current_user_role() == ROLE_ADMIN:
+        if current_user_can_view_global_data():
             total_patients = db.query(Paciente).count()
             assessments_query = db.query(Avaliacao)
         else:
