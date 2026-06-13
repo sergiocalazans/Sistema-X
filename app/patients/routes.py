@@ -31,6 +31,7 @@ def index():
             rows.append({
                 "id": paciente.id,
                 "name": paciente.nome,
+                "professionals": _professionals_label(paciente),
                 "cpf": paciente.cpf or "-",
                 "email": paciente.email or "-",
                 "phone": paciente.telefone or "-",
@@ -41,7 +42,12 @@ def index():
                 "stage": _stage_label(paciente.status_jornada),
             })
 
-        return render_template("pages/patients.html", active_page="patients", patients=rows)
+        return render_template(
+            "pages/patients.html",
+            active_page="patients",
+            patients=rows,
+            show_professional_column=current_user_role() == ROLE_ADMIN,
+        )
 
 
 @patients_bp.route("/novo", methods=["GET", "POST"])
@@ -174,6 +180,12 @@ def _stage_label(value):
         "pos_diagnostico": "Pós-diagnóstico",
     }
     return labels.get(value or "cadastro", "Cadastro")
+
+
+def _professionals_label(paciente):
+    if not paciente.profissionais:
+        return "-"
+    return ", ".join(sorted(profissional.nome for profissional in paciente.profissionais))
 
 
 def _save_patient_photos(paciente):

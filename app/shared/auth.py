@@ -26,6 +26,10 @@ def current_user_role_label():
     return ROLE_LABELS.get(current_user_role(), "Profissional")
 
 
+def current_user_can_view_global_data():
+    return current_user_role() in {ROLE_ADMIN, ROLE_VIEWER}
+
+
 def current_user_must_update_password():
     return bool(session.get("deve_atualizar_senha"))
 
