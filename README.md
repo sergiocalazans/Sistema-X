@@ -19,6 +19,7 @@ O projeto organiza informações clínicas, histórico familiar, documentos, fot
 - [🛠️ Tecnologias](#tecnologias)
 - [🏗️ Arquitetura](#arquitetura)
 - [▶️ Como executar](#como-executar)
+- [🐳 Como executar com Docker](#como-executar-com-docker)
 - [🔑 Acessos de demonstração](#acessos-de-demonstração)
 - [🗄️ Modelo de dados](#modelo-de-dados)
 - [📊 Relatórios](#relatórios)
@@ -167,6 +168,181 @@ Acesse no navegador:
 ```text
 http://127.0.0.1:5000
 ```
+
+## 🐳 Como executar com Docker
+
+Com Docker, o usuário não precisa instalar Python, MySQL nem bibliotecas manualmente. O ambiente sobe com dois containers: um para a aplicação Flask e outro para o MySQL.
+
+### 1. Instalar Git e Docker Desktop
+
+Instale o Git para clonar o repositório:
+
+```text
+https://git-scm.com/downloads
+```
+
+Instale o Docker Desktop:
+
+```text
+https://docs.docker.com/desktop/setup/install/windows-install/
+```
+
+No Windows, mantenha a opção de backend com WSL 2 habilitada. Depois da instalação, abra o Docker Desktop e confirme no terminal:
+
+```bash
+docker --version
+docker compose version
+```
+
+### 2. Clonar o projeto
+
+Clone o repositório e acesse a pasta:
+
+```bash
+git clone https://github.com/seu-usuario/Sistema-X.git
+cd Sistema-X
+```
+
+Se quiser executar a versão com Docker desta branch:
+
+```bash
+git checkout feature/docker
+```
+
+### 3. Subir o projeto localmente
+
+Suba a aplicação Flask e o MySQL com Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+O Compose cria dois serviços:
+
+- `web`: aplicação Flask executada com Gunicorn.
+- `mysql`: banco MySQL 8.4 com volume persistente.
+
+Depois que os containers estiverem ativos, popule o banco com dados de demonstração em outro terminal:
+
+```bash
+docker compose exec web python seed.py
+```
+
+Acesse no navegador:
+
+```text
+http://localhost:5000
+```
+
+Para parar os containers:
+
+```bash
+docker compose down
+```
+
+Para apagar também o volume do banco e reiniciar os dados do zero:
+
+```bash
+docker compose down -v
+```
+
+### 4. Publicar a imagem Docker manualmente
+
+Para publicar uma imagem em um registry, como Docker Hub, gere a imagem e envie:
+
+```bash
+docker build -t seu-usuario/sistema-x:latest .
+docker login
+docker push seu-usuario/sistema-x:latest
+```
+
+No Railway, o caminho recomendado para este projeto é conectar o repositório GitHub e deixar a plataforma construir o container pelo `Dockerfile`. Assim, não é obrigatório publicar a imagem no Docker Hub.
+
+### Publicação no Railway com Docker
+
+O Railway detecta automaticamente um arquivo chamado `Dockerfile` na raiz do repositório e usa esse arquivo para construir o serviço web.
+
+#### 1. Enviar a branch para o GitHub
+
+```bash
+git push -u origin feature/docker
+```
+
+#### 2. Criar o projeto no Railway
+
+1. Acesse o Railway.
+2. Clique em `New Project`.
+3. Escolha uma opção de projeto vazio ou de deploy via GitHub.
+
+#### 3. Publicar o banco de dados MySQL
+
+1. Dentro do projeto, clique em `+ New`.
+2. Selecione `Database`.
+3. Escolha `MySQL`.
+4. Aguarde o serviço do banco ser criado.
+5. Abra o serviço MySQL e consulte as variáveis disponibilizadas:
+
+```env
+MYSQLHOST
+MYSQLPORT
+MYSQLUSER
+MYSQLPASSWORD
+MYSQLDATABASE
+MYSQL_URL
+```
+
+#### 4. Publicar o site web
+
+1. No mesmo projeto Railway, clique em `+ New`.
+2. Selecione `GitHub Repo`.
+3. Escolha o repositório do Sistema-X.
+4. Selecione a branch `feature/docker`.
+5. Confirme que o Railway detectou o `Dockerfile` na raiz.
+
+#### 5. Configurar variáveis do serviço web
+
+No serviço web, abra `Variables` e adicione:
+
+```env
+MYSQL_USER=${{MySQL.MYSQLUSER}}
+MYSQL_PASSWORD=${{MySQL.MYSQLPASSWORD}}
+MYSQL_HOST=${{MySQL.MYSQLHOST}}
+MYSQL_PORT=${{MySQL.MYSQLPORT}}
+MYSQL_DATABASE=${{MySQL.MYSQLDATABASE}}
+SECRET_KEY=troque-essa-chave-em-producao
+```
+
+Se o nome do serviço do banco no Railway não for `MySQL`, ajuste o prefixo das referências. Por exemplo, se o serviço se chamar `mysql-db`, use `${{mysql-db.MYSQLUSER}}`.
+
+#### 6. Gerar domínio público
+
+1. Abra o serviço web.
+2. Vá em `Settings`.
+3. Acesse `Networking`.
+4. Em `Public Networking`, clique em `Generate Domain`.
+5. O Railway vai gerar um domínio `.railway.app` com HTTPS automático.
+
+#### 7. Popular o banco no Railway
+
+Após o primeiro deploy do site, execute o seed uma vez para criar os dados demonstrativos:
+
+```bash
+python seed.py
+```
+
+Esse comando deve ser executado no ambiente do serviço web do Railway, usando o shell/terminal disponibilizado pela plataforma.
+
+#### 8. Validar produção
+
+Depois do deploy, acesse o domínio gerado pelo Railway e teste:
+
+- Login com `contato@sxf.com` e senha `123456`.
+- Dashboard com indicadores.
+- Tela de pacientes.
+- Nova triagem.
+- Relatórios e PDF.
+
+O arquivo `.env` local não deve ser enviado ao GitHub. Em produção, as variáveis ficam cadastradas no painel do Railway.
 
 ## 🔑 Acessos de demonstração
 
