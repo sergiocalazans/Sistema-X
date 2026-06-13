@@ -38,10 +38,11 @@ git clone https://github.com/seu-usuario/Sistema-X.git
 cd Sistema-X
 ```
 
-Para usar a versao preparada com Docker, acessamos a branch:
+Usamos a branch principal publicada:
 
 ```powershell
-git checkout feature/docker
+git checkout main
+git pull origin main
 ```
 
 Dentro da pasta do projeto, temos arquivos importantes como `Dockerfile`, `docker-compose.yml`, `requirements.txt`, `seed.py` e `run.py`.
@@ -95,28 +96,30 @@ Senha: 123456
 
 O administrador consegue visualizar os pacientes, incluindo o profissional vinculado. O visualizador consegue acessar dashboard e relatorios com os dados gerais do sistema.
 
-## 5:00 a 6:10 - Publicando a branch no GitHub
+## 5:00 a 6:10 - Publicando no GitHub
 
 **Cena:** terminal com comandos Git.
 
 **Narracao:**
-Antes de publicar no Railway, enviamos a branch com Docker para o GitHub:
+Antes de publicar no Railway, confirmamos que o codigo esta salvo no GitHub:
 
 ```powershell
 git status
 git add .
-git commit -m "feat: add docker deployment support"
-git push -u origin feature/docker
+git commit -m "docs: atualiza documentacao de instalacao"
+git push origin main
 ```
 
 O arquivo `.env` nao deve ser enviado ao GitHub, porque pode conter senhas e chaves secretas. As variaveis de producao serao cadastradas diretamente no Railway.
 
-## 6:10 a 7:20 - Criando o banco MySQL no Railway
+## 6:10 a 7:20 - Banco MySQL no Railway
 
 **Cena:** painel do Railway.
 
 **Narracao:**
-No Railway, criamos um novo projeto. Dentro dele, clicamos em `+ New`, selecionamos `Database` e escolhemos `MySQL`.
+No Railway, abrimos o projeto do Sistema-X. Se o projeto ja tiver um servico `Database` ou `MySQL`, nao criamos outro banco. Reaproveitamos esse database.
+
+Se ainda nao existir banco, clicamos em `+ New`, selecionamos `Database` e escolhemos `MySQL`.
 
 Quando o banco for criado, o Railway disponibiliza variaveis como:
 
@@ -138,7 +141,7 @@ Essas informacoes serao usadas pelo servico web para se conectar ao banco.
 **Narracao:**
 Agora criamos o servico web. No mesmo projeto Railway, clicamos em `+ New`, selecionamos `GitHub Repo` e escolhemos o repositorio do Sistema-X.
 
-Selecionamos a branch `feature/docker`. Como existe um arquivo `Dockerfile` na raiz, o Railway detecta automaticamente que deve construir o container usando Docker.
+Selecionamos a branch `main`. Como existe um arquivo `Dockerfile` na raiz, o Railway detecta automaticamente que deve construir o container usando Docker.
 
 Depois configuramos as variaveis do servico web:
 
@@ -151,7 +154,7 @@ MYSQL_DATABASE=${{MySQL.MYSQLDATABASE}}
 SECRET_KEY=uma-chave-secreta-forte
 ```
 
-Se o servico MySQL tiver outro nome, ajustamos o prefixo das referencias.
+Se o servico MySQL tiver outro nome, ajustamos o prefixo das referencias. No Railway, mantemos `MYSQL_DATABASE` apontando para o banco criado pela plataforma, normalmente `${{MySQL.MYSQLDATABASE}}`.
 
 ## 8:30 a 9:20 - Dominio e seed em producao
 
@@ -175,7 +178,7 @@ Isso popula o banco de producao com os dados demonstrativos.
 **Cena:** sistema rodando no Railway.
 
 **Narracao:**
-Com isso, o Sistema-X esta instalado localmente com Docker e tambem publicado em nuvem pelo Railway. Vimos a instalacao do Git e Docker, o clone do repositorio, a execucao local, a populacao do banco, o acesso ao sistema, a criacao do banco MySQL no Railway, o deploy do site e a geracao do dominio publico.
+Com isso, o Sistema-X esta instalado localmente com Docker e tambem publicado em nuvem pelo Railway. Vimos a instalacao do Git e Docker, o clone do repositorio, a execucao local, a populacao do banco, o acesso ao sistema, o uso do banco MySQL no Railway, o deploy do site e a geracao do dominio publico.
 
 Para encerrar a execucao local, usamos:
 

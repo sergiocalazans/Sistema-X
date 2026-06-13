@@ -21,6 +21,7 @@ O projeto organiza informações clínicas, histórico familiar, documentos, fot
 - [▶️ Como executar](#como-executar)
 - [🐳 Como executar com Docker](#como-executar-com-docker)
 - [🔑 Acessos de demonstração](#acessos-de-demonstração)
+- [🖼️ Imagens e documentos dos pacientes](#imagens-e-documentos-dos-pacientes)
 - [🗄️ Modelo de dados](#modelo-de-dados)
 - [📊 Relatórios](#relatórios)
 - [✅ Validação local](#validação-local)
@@ -139,15 +140,15 @@ pip install -r requirements.txt
 Crie um banco MySQL e configure as variáveis de ambiente conforme a sua máquina:
 
 ```bash
-set FLASK_SECRET_KEY=sua-chave-secreta
-set DB_USER=root
-set DB_PASSWORD=sua-senha
-set DB_HOST=localhost
-set DB_PORT=3306
-set DB_NAME=sxf_triagem
+set SECRET_KEY=sua-chave-secreta
+set MYSQL_USER=root
+set MYSQL_PASSWORD=sua-senha
+set MYSQL_HOST=localhost
+set MYSQL_PORT=3306
+set MYSQL_DATABASE=sistema-x
 ```
 
-Quando as variáveis não forem informadas, a aplicação usa os valores padrão definidos em `app/config.py`.
+Quando as variáveis não forem informadas, a aplicação usa os valores padrão definidos em `config.py`.
 
 ### 4. Popular dados de demonstração
 
@@ -203,11 +204,7 @@ git clone https://github.com/seu-usuario/Sistema-X.git
 cd Sistema-X
 ```
 
-Se quiser executar a versão com Docker desta branch:
-
-```bash
-git checkout feature/docker
-```
+Use a branch `main` para executar a versão publicada do projeto.
 
 ### 3. Subir o projeto localmente
 
@@ -265,7 +262,7 @@ O Railway detecta automaticamente um arquivo chamado `Dockerfile` na raiz do rep
 #### 1. Enviar a branch para o GitHub
 
 ```bash
-git push -u origin feature/docker
+git push origin main
 ```
 
 #### 2. Criar o projeto no Railway
@@ -274,13 +271,18 @@ git push -u origin feature/docker
 2. Clique em `New Project`.
 3. Escolha uma opção de projeto vazio ou de deploy via GitHub.
 
-#### 3. Publicar o banco de dados MySQL
+#### 3. Publicar ou reaproveitar o banco de dados MySQL
+
+Se o projeto Railway já tiver um serviço `Database` ou `MySQL`, não crie outro banco. Reaproveite o database existente.
+
+Para criar um banco novo apenas quando ainda não existir:
 
 1. Dentro do projeto, clique em `+ New`.
 2. Selecione `Database`.
 3. Escolha `MySQL`.
 4. Aguarde o serviço do banco ser criado.
-5. Abra o serviço MySQL e consulte as variáveis disponibilizadas:
+
+Depois, abra o serviço MySQL e consulte as variáveis disponibilizadas:
 
 ```env
 MYSQLHOST
@@ -296,7 +298,7 @@ MYSQL_URL
 1. No mesmo projeto Railway, clique em `+ New`.
 2. Selecione `GitHub Repo`.
 3. Escolha o repositório do Sistema-X.
-4. Selecione a branch `feature/docker`.
+4. Selecione a branch `main`.
 5. Confirme que o Railway detectou o `Dockerfile` na raiz.
 
 #### 5. Configurar variáveis do serviço web
@@ -313,6 +315,8 @@ SECRET_KEY=troque-essa-chave-em-producao
 ```
 
 Se o nome do serviço do banco no Railway não for `MySQL`, ajuste o prefixo das referências. Por exemplo, se o serviço se chamar `mysql-db`, use `${{mysql-db.MYSQLUSER}}`.
+
+No Railway, recomenda-se manter `MYSQL_DATABASE` apontando para o banco criado pela plataforma, normalmente `${{MySQL.MYSQLDATABASE}}`, em vez de trocar manualmente para `sistema-x`.
 
 #### 6. Gerar domínio público
 
@@ -353,6 +357,34 @@ O arquivo `.env` local não deve ser enviado ao GitHub. Em produção, as variá
 | Visualizador          | `relatorios@sxf.com` | `123456` |
 
 Usuários criados pela tela administrativa também iniciam com a senha padrão `123456` e devem atualizar a senha no primeiro acesso.
+
+## 🖼️ Imagens e documentos dos pacientes
+
+As fotos e documentos são enviados na tela de cadastro/edição do paciente.
+
+Para visualizar imagens cadastradas:
+
+1. Entre no sistema como administrador ou profissional da saúde.
+2. Acesse `Pacientes`.
+3. Clique em `Editar` no paciente desejado.
+4. Na seção `Fotos obrigatórias`, use os links `Ver foto cadastrada`.
+5. O arquivo abre em uma nova aba do navegador.
+
+O sistema aceita três fotos principais do paciente:
+
+- `Foto - Rosto`
+- `Foto - Perfil`
+- `Foto - Lado`
+
+Os documentos anteriores aparecem na seção `Documentos anteriores`, com o link `Abrir arquivo`.
+
+Tecnicamente, os arquivos ficam no diretório configurado por `UPLOAD_FOLDER`. Por padrão, a aplicação usa:
+
+```text
+app/uploads/pacientes/<id-do-paciente>/
+```
+
+Em Docker local, os arquivos enviados ficam dentro do container. Para produção, recomenda-se configurar armazenamento persistente ou volume dedicado antes de usar uploads reais em ambiente público.
 
 ## 🗄️ Modelo de dados
 
