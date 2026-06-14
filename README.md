@@ -18,11 +18,13 @@ O projeto organiza informações clínicas, histórico familiar, documentos, fot
 - [🩺 Regras de triagem](#regras-de-triagem)
 - [🛠️ Tecnologias](#tecnologias)
 - [🏗️ Arquitetura](#arquitetura)
+- [📚 Documento técnico de implementação](#documento-técnico-de-implementação)
 - [▶️ Como executar](#como-executar)
 - [🐳 Como executar com Docker](#como-executar-com-docker)
 - [🔑 Acessos de demonstração](#acessos-de-demonstração)
 - [🖼️ Imagens e documentos dos pacientes](#imagens-e-documentos-dos-pacientes)
 - [🗄️ Modelo de dados](#modelo-de-dados)
+- [🧩 Modelos do banco de dados](#modelos-do-banco-de-dados)
 - [📊 Relatórios](#relatórios)
 - [✅ Validação local](#validação-local)
 - [🚀 Fluxo de desenvolvimento](#fluxo-de-desenvolvimento)
@@ -80,45 +82,65 @@ Usuários cadastrados pelo administrador recebem uma senha padrão. No primeiro 
 
 ## 🏗️ Arquitetura
 
-O projeto foi modularizado seguindo boas práticas de desenvolvimento web com Flask. As rotas foram organizadas em blueprints, os serviços concentram regras reutilizáveis e os templates foram separados por contexto funcional.
+O projeto foi modularizado seguindo boas práticas de desenvolvimento web com Flask. A aplicação usa uma fábrica em `app/__init__.py`, registra rotas por blueprints, concentra regras reutilizáveis em serviços e mantém a configuração de banco e ambiente separada no arquivo `config.py`.
+
+A estrutura também inclui os arquivos necessários para execução com Docker, publicação no Railway e documentação técnica do projeto.
 
 ```text
 Sistema-X/
 ├── app/
 │   ├── __init__.py              # Fábrica da aplicação Flask
 │   ├── blueprints.py            # Registro central dos blueprints
-│   ├── config.py                # Configurações da aplicação
 │   ├── database.py              # Instância do SQLAlchemy
 │   ├── models.py                # Modelos do banco de dados
 │   ├── security.py              # Regras de acesso e autenticação
 │   ├── template_context.py      # Contexto compartilhado dos templates
+│   ├── assessments/             # Fluxos de avaliação clínica
 │   ├── auth/                    # Login, logout e troca de senha
+│   ├── controllers/             # Controladores auxiliares
 │   ├── dashboard/               # Indicadores e visões analíticas
 │   ├── patients/                # Cadastro e consulta de pacientes
-│   ├── referrals/               # Encaminhamentos
 │   ├── reports/                 # Relatórios, exportações e PDF
-│   ├── triage/                  # Avaliações de triagem
+│   ├── settings/                # Configurações e parâmetros do sistema
+│   ├── shared/                  # Recursos compartilhados entre módulos
 │   ├── users/                   # Gestão administrativa de usuários
 │   ├── services/
-│   │   ├── dashboard.py         # Dados para painéis e gráficos
+│   │   ├── exports.py           # Exportação de dados tabulares
 │   │   ├── pdf_reports.py       # Montagem dos relatórios em PDF
-│   │   └── triage.py            # Cálculo de score e recomendação
+│   │   ├── reports.py           # Consultas e agregações dos relatórios
+│   │   └── seed_data.py         # Dados iniciais de demonstração
 │   ├── static/
 │   │   ├── css/
 │   │   ├── js/
-│   │   └── uploads/
+│   │   └── favicon.svg
 │   └── templates/
-│       ├── auth/
-│       ├── dashboard/
-│       ├── patients/
-│       ├── referrals/
-│       ├── reports/
-│       ├── triage/
-│       └── users/
+│       ├── app.html
+│       ├── base.html
+│       └── pages/
+├── docs/
+│   ├── documentacao_tecnica_implementacao_sistema_x_atualizada.docx
+│   ├── modelo_conceitual_banco.svg
+│   ├── modelo_conceitual_banco.png
+│   ├── modelo_logico_banco.svg
+│   ├── modelo_logico_banco.png
+│   ├── modelo_fisico_banco.sql
+│   └── roteiro_video_explicativo.md
+├── config.py                    # Configurações por variáveis de ambiente
+├── Dockerfile                   # Build da aplicação web
+├── docker-compose.yml           # Ambiente local com Flask e MySQL
+├── docker-entrypoint.py         # Inicialização do container web
+├── .env.example                 # Exemplo de variáveis para execução local
+├── .env.docker.example          # Exemplo de variáveis para Docker
 ├── run.py                       # Ponto de entrada da aplicação
 ├── requirements.txt             # Dependências do projeto
 └── seed.py                      # Popular banco com dados de exemplo
 ```
+
+## 📚 Documento técnico de implementação
+
+A documentação consolidada do projeto está disponível em:
+
+[Documento Técnico de Implementação](https://docs.google.com/document/d/1JI4RJiVWRYxtebauY0ODSeIW_qSiyY23RpV-byF4jq0/edit?tab=t.0)
 
 ## ▶️ Como executar
 
@@ -395,6 +417,30 @@ Em Docker local, os arquivos enviados ficam dentro do container. Para produção
 | Avaliação      | Registra sintomas, score, limiar, recomendação, etapa, resultado e observações da triagem.      |
 | Encaminhamento | Controla solicitações, prioridades, status e acompanhamento dos pacientes encaminhados.         |
 
+## 🧩 Modelos do banco de dados
+
+Os modelos do banco estão documentados na pasta `docs/` em formato visual e em SQL. As imagens abaixo seguem o padrão tradicional de modelagem e também foram inseridas no documento técnico de implementação.
+
+Arquivos principais:
+
+- [Modelo conceitual em SVG](docs/modelo_conceitual_banco.svg)
+- [Modelo conceitual em PNG](docs/modelo_conceitual_banco.png)
+- [Modelo lógico em SVG](docs/modelo_logico_banco.svg)
+- [Modelo lógico em PNG](docs/modelo_logico_banco.png)
+- [Código SQL do modelo físico](docs/modelo_fisico_banco.sql)
+
+### Modelo conceitual
+
+![Modelo conceitual do banco de dados](docs/modelo_conceitual_banco.png)
+
+### Modelo lógico
+
+![Modelo lógico do banco de dados](docs/modelo_logico_banco.png)
+
+### Modelo físico
+
+O modelo físico está escrito em SQL no arquivo [docs/modelo_fisico_banco.sql](docs/modelo_fisico_banco.sql). Ele contém a criação do banco, das tabelas, chaves primárias, chaves estrangeiras, índices e restrições usadas pela aplicação.
+
 ## 📊 Relatórios
 
 A tela de relatórios apresenta indicadores gerais, análises por período, distribuição de resultados, sintomas frequentes, lista de avaliações e dados de encaminhamentos.
@@ -440,15 +486,11 @@ Depois, validar no navegador:
 
 ## 🎥 Vídeo tutorial do sistema
 
-Adicione aqui o link do vídeo tutorial de uso do sistema:
+[Link do vídeo tutorial do sistema](https://youtu.be/C9xytdwZJF0?si=AOlpQqv5W2rI4yZB)
 
-[Link do vídeo tutorial do sistema](#)
+## 🎬 Vídeo de explicação do projeto (Instalação e Execução)
 
-## 🎬 Vídeo de explicação do projeto
-
-Adicione aqui o link do vídeo de explicação do projeto:
-
-[Link do vídeo de explicação do projeto](#)
+[Link do vídeo de explicação do projeto](https://youtu.be/pVSkqaf7qP8?si=DzeWi1UVAjNGwpbR)
 
 ## 👥 Colaboradores
 

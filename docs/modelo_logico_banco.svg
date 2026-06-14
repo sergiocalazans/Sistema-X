@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1040" viewBox="0 0 1500 1040">
+  <style>
+    .title{font:700 28px Arial;fill:#0f172a}
+    .subtitle{font:400 15px Arial;fill:#475569}
+    .table{fill:#fff;stroke:#111827;stroke-width:2}
+    .head{fill:#e2e8f0;stroke:#111827;stroke-width:2}
+    .tname{font:700 15px Arial;fill:#111827}
+    .field{font:400 12px Consolas,monospace;fill:#1f2937}
+    .pk{font:700 12px Consolas,monospace;fill:#047857}
+    .fk{font:700 12px Consolas,monospace;fill:#1d4ed8}
+    .line{stroke:#475569;stroke-width:1.8;fill:none}
+    .card{font:700 12px Arial;fill:#0f766e}
+  </style>
+  <text x="40" y="45" class="title">Modelo Lógico Tradicional</text>
+  <text x="40" y="70" class="subtitle">Esquema relacional com PK, FK e cardinalidades entre tabelas</text>
+
+  <g transform="translate(40,110)">
+    <rect width="270" height="248" class="table"/><rect width="270" height="34" class="head"/>
+    <text x="135" y="22" text-anchor="middle" class="tname">PROFISSIONAL</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="field">nome</text><text x="14" y="102" class="field">email UNIQUE</text><text x="14" y="124" class="field">senha_hash</text><text x="14" y="146" class="field">especialidade</text><text x="14" y="168" class="field">tipo_usuario</text><text x="14" y="190" class="field">deve_atualizar_senha</text><text x="14" y="212" class="field">criado_em</text>
+  </g>
+
+  <g transform="translate(430,90)">
+    <rect width="330" height="380" class="table"/><rect width="330" height="34" class="head"/>
+    <text x="165" y="22" text-anchor="middle" class="tname">PACIENTE</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="field">nome, cpf, email, telefone</text><text x="14" y="102" class="field">data_nascimento, sexo</text><text x="14" y="124" class="field">nome_social, endereco</text><text x="14" y="146" class="field">origem_encaminhamento</text><text x="14" y="168" class="field">requisicao_medica</text><text x="14" y="190" class="field">status_jornada</text><text x="14" y="212" class="field">triagem_clinica</text><text x="14" y="234" class="field">triagem_socioeconomica</text><text x="14" y="256" class="field">caracteristicas_fisicas</text><text x="14" y="278" class="field">foto_rosto</text><text x="14" y="300" class="field">foto_perfil</text><text x="14" y="322" class="field">foto_lado</text><text x="14" y="344" class="field">consentimento_lgpd</text><text x="14" y="366" class="field">observacoes_lgpd, criado_em</text>
+  </g>
+
+  <g transform="translate(70,460)">
+    <rect width="310" height="118" class="table"/><rect width="310" height="34" class="head"/>
+    <text x="155" y="22" text-anchor="middle" class="tname">PACIENTE_PROFISSIONAL</text>
+    <text x="14" y="58" class="pk">PK/FK paciente_id</text><text x="14" y="80" class="pk">PK/FK profissional_id</text><text x="14" y="102" class="field">criado_em</text>
+  </g>
+
+  <g transform="translate(820,110)">
+    <rect width="260" height="120" class="table"/><rect width="260" height="34" class="head"/>
+    <text x="130" y="22" text-anchor="middle" class="tname">SINTOMA</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="field">descricao</text><text x="14" y="102" class="field">categoria</text>
+  </g>
+
+  <g transform="translate(1180,110)">
+    <rect width="260" height="140" class="table"/><rect width="260" height="34" class="head"/>
+    <text x="130" y="22" text-anchor="middle" class="tname">PESO_SINTOMA</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="fk">FK sintoma_id</text><text x="14" y="102" class="field">sexo_referencia</text><text x="14" y="124" class="field">peso, atualizado_em</text>
+  </g>
+
+  <g transform="translate(820,310)">
+    <rect width="260" height="138" class="table"/><rect width="260" height="34" class="head"/>
+    <text x="130" y="22" text-anchor="middle" class="tname">LIMIAR_DECISAO</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="field">sexo</text><text x="14" y="102" class="field">valor</text><text x="14" y="124" class="field">atualizado_em</text>
+  </g>
+
+  <g transform="translate(430,560)">
+    <rect width="330" height="315" class="table"/><rect width="330" height="34" class="head"/>
+    <text x="165" y="22" text-anchor="middle" class="tname">AVALIACAO</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="fk">FK paciente_id</text><text x="14" y="102" class="fk">FK profissional_id</text><text x="14" y="124" class="fk">FK limiar_decisao_id</text><text x="14" y="146" class="field">score_calculado</text><text x="14" y="168" class="field">encaminhar, observacao</text><text x="14" y="190" class="field">etapa_jornada</text><text x="14" y="212" class="field">requisicao_medica</text><text x="14" y="234" class="field">triagem_clinica</text><text x="14" y="256" class="field">triagem_socioeconomica</text><text x="14" y="278" class="field">resultado/plano/suporte</text><text x="14" y="300" class="field">realizado_em</text>
+  </g>
+
+  <g transform="translate(850,600)">
+    <rect width="290" height="140" class="table"/><rect width="290" height="34" class="head"/>
+    <text x="145" y="22" text-anchor="middle" class="tname">AVALIACAO_SINTOMA</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="fk">FK avaliacao_id</text><text x="14" y="102" class="fk">FK sintoma_id</text><text x="14" y="124" class="field">presente</text>
+  </g>
+
+  <g transform="translate(80,710)">
+    <rect width="280" height="165" class="table"/><rect width="280" height="34" class="head"/>
+    <text x="140" y="22" text-anchor="middle" class="tname">FAMILIAR_PACIENTE</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="fk">FK paciente_id</text><text x="14" y="102" class="field">nome, parentesco</text><text x="14" y="124" class="field">telefone, email</text><text x="14" y="146" class="field">momento, observacao, criado_em</text>
+  </g>
+
+  <g transform="translate(1180,710)">
+    <rect width="280" height="165" class="table"/><rect width="280" height="34" class="head"/>
+    <text x="140" y="22" text-anchor="middle" class="tname">DOCUMENTO_PACIENTE</text>
+    <text x="14" y="58" class="pk">PK id</text><text x="14" y="80" class="fk">FK paciente_id</text><text x="14" y="102" class="field">descricao, tipo_documento</text><text x="14" y="124" class="field">origem, nome_arquivo</text><text x="14" y="146" class="field">caminho_arquivo, criado_em</text>
+  </g>
+
+  <path d="M310 215 H430" class="line"/><text x="323" y="204" class="card">1</text><text x="405" y="204" class="card">N</text>
+  <path d="M270 358 V460" class="line"/><text x="282" y="382" class="card">1</text><text x="282" y="450" class="card">N</text>
+  <path d="M380 520 H430" class="line"/><text x="392" y="509" class="card">N</text><text x="410" y="509" class="card">1</text>
+  <path d="M595 470 V560" class="line"/><text x="608" y="494" class="card">1</text><text x="608" y="548" class="card">N</text>
+  <path d="M1080 170 H1180" class="line"/><text x="1095" y="159" class="card">1</text><text x="1160" y="159" class="card">N</text>
+  <path d="M950 448 C900 520 820 555 760 615" class="line"/><text x="960" y="470" class="card">1</text><text x="775" y="608" class="card">N</text>
+  <path d="M760 670 H850" class="line"/><text x="772" y="659" class="card">1</text><text x="832" y="659" class="card">N</text>
+  <path d="M1080 200 C1115 300 1110 520 1050 600" class="line"/><text x="1090" y="221" class="card">1</text><text x="1062" y="592" class="card">N</text>
+  <path d="M430 770 H360" class="line"/><text x="410" y="759" class="card">1</text><text x="366" y="759" class="card">N</text>
+  <path d="M760 790 H1180" class="line"/><text x="775" y="779" class="card">1</text><text x="1160" y="779" class="card">N</text>
+</svg>
